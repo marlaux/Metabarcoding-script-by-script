@@ -1,0 +1,9 @@
+The derep_vsearch.sh script runs the dereplication by sample and the global dereplication independently from the chain.
+
+This step gives you the dereplicated fastas by sample and the global dereplicated multifasta, which is the INPUT for the clustering step. 
+line 9: Change the name of the global dereplicated multifasta.
+
+If you choose to run the 3_read_cleaning tag_primer_clipping_part1 and 2 wrapped scripts, you have to skip the independent 4_dereplicate step, because in the end of the tag_primer_clipping_part2.sh script you get the dereplicated by sample fastas '*derep.fasta' and the global dereplication is in the beginning of the clustering_swarm_complete.sh script, in the 5_clustering step.
+
+Dereplication identifies potential PCR duplicates, and their abundance is added in the header of head sequence, so this original abundance information is keeped up to the end of the analysis.
+

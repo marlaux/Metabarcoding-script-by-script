@@ -1,0 +1,50 @@
+!!!THERE IS TWO MODES TO RUN THE WORFLOW!!!
+
+You can choose between running the worflow in "step up mode" or "wrapped mode".
+
+STEP UP MODE:
+Run each step and each script one after another. It is a good choice when your goal is to have a closer look to your outputs and what is been done in each step.
+
+WRAPPED MODE
+The wrapped mode performs the same tasks and produce the same outputs, but faster and safer. The chained scripts wrapped together can be connected by temporary files, avoiding useless intermediate files. The wrapped mode also speed up the task, because it keeps the chain of scripts running in the same job queue. The choice of scripts to be wrapped is not arbitrary. The scripts selected to be wrapped usually involves scripts that you probably would not change arguments, from more technical steps, like the 3_read_cleaning step. Besides that, the wrapped mode also encloses especially delicated linux functions, like 'sed' or 'awk', which usually conects two tasks by formatting the header or the entire multifasta file.
+
+STEP UP WORKFLOW 		
+1.merge_pear.sh		
+2.demulti_dual_index_linked.sh	
+3.tag_primer_clipping_part1.sh
+4.read_trim.sh		
+5.convert2fasta.sh		
+6.extract_quality.sh	
+7.dereplicate_by_sample.sh	
+8.global_dereplication.sh	
+9.clustering_swarm.sh
+10.sort_representatives.sh
+11.chimera_checking.sh
+12...format references
+13...format references
+14...format references
+...in progress
+
+INPUT				WRAPPED WORKFLOW	OUTPUT
+R1-R2 raw fastq files	1.merge_pear.sh		.assembled.fastq
+.assembled.fastq	2.demulti_dual_index.sh	sample[1..n].fq
+sample[1..n].fq		3.tag_primer_clipping_part1.sh	trim2.fq
+trim2.fq		4.tag_primer_clipping_part2.sh	trim3.fq + 
+							quality.qual +
+							_f1.fasta +
+							_derep.fasta
+_f1.fasta		5.clustering_step_swarm.sh	global_derep.fasta +
+							1f_representatives.fas +
+							global_derep.struct +
+							global_derep.stats +
+							global_derep.swarms +
+							global_derep.uchime +
+Xyleborus_genus.fasta	6.format_NCBI2lineages.sh	acc2taxid2lineage +
+							lineage_formated.fasta +
+							.uniq.fasta
+1f_representatives.fas	7.Blast.sh			2f_representatives.fas +
+							_local_blast.log
+_local_blast.log	8.Blast_results_format.pl	 Blast_results_formatted
+			9.build_OTU_table.sh
+...in progress
+

@@ -1,0 +1,16 @@
+This script format your tags according Cutadapt method
+to run just type: 
+perl preparing_tags_LCPI.pl
+and it will ask your mapping_file to edit and which format you need.
+
+you can edit the formatting, for example, removing the 3' anchor from 'linked' mode:
+the signs $ and ^ are the anchor signs, you can carefully edit the script removing or adding it. Example, leave only 5' end anchored:
+push (@new_file1, (">$sample\n^$tag_F...$tag_R\$\n"));
+push (@new_file2, (">$sample\n^$RCtagR...$RCtagF\$\n"));
+push (@new_file3, (">$sample\n^$tag_F...$RCtagR\$\n"));
+					just remove the dolar sign:
+					$tag_R\n"));
+					$RCtagF\n"));
+					$RCtagR\n"));
+					but don't forget the end of line \n
+						or the double quote "

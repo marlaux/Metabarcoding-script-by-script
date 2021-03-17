@@ -1,0 +1,41 @@
+Swarm: robust and fast clustering method for amplicon-based studies
+PeerJ 2:e593 https://doi.org/10.7717/peerj.593
+
+Mahe F, Rognes T, Quince C, de Vargas C, Dunthorn M (2015)
+Swarm v2: highly-scalable and high-resolution amplicon clustering
+PeerJ 3:e1420 https://doi.org/10.7717/peerj.1420
+
+Usage: swarm [OPTIONS] [FASTAFILE]
+
+General options:
+ -h, --help                          display this help and exit
+ -t, --threads INTEGER               number of threads to use (1)
+ -v, --version                       display version information and exit
+
+Clustering options:
+ -d, --differences INTEGER           resolution (1)
+ -n, --no-otu-breaking               never break OTUs (not recommended!)
+
+Fastidious options (only when d = 1):
+ -b, --boundary INTEGER              min mass of large OTUs (3)
+ -c, --ceiling INTEGER               max memory in MB for Bloom filter (unlim.)
+ -f, --fastidious                    link nearby low-abundance swarms
+ -y, --bloom-bits INTEGER            bits used per Bloom filter entry (16)
+
+Input/output options:
+ -a, --append-abundance INTEGER      value to use when abundance is missing
+ -i, --internal-structure FILENAME   write internal OTU structure to file
+ -l, --log FILENAME                  log to file, not to stderr
+ -o, --output-file FILENAME          output result to file (stdout)
+ -r, --mothur                        output using mothur-like format
+ -s, --statistics-file FILENAME      dump OTU statistics to file
+ -u, --uclust-file FILENAME          output using UCLUST-like format to file
+ -w, --seeds FILENAME                write OTU representatives to FASTA file
+ -z, --usearch-abundance             abundance annotation in usearch style
+
+Pairwise alignment advanced options (only when d > 1):
+ -m, --match-reward INTEGER          reward for nucleotide match (5)
+ -p, --mismatch-penalty INTEGER      penalty for nucleotide mismatch (4)
+ -g, --gap-opening-penalty INTEGER   gap open penalty (12)
+ -e, --gap-extension-penalty INTEGER gap extension penalty (4)
+

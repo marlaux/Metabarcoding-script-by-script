@@ -1,0 +1,38 @@
+Hello fellow metabarcoder!
+
+This scripts/jobs/directories structure was planned to help you to not waste your precious resercher time with technical issues
+You can copy the entire 'metapipe' folder to your work directory using cp -r
+	cp -r /cluster/projects/nn9623k/metapipe .
+For each step, take a time to study what is been done, along with the tools and respective argument, default and optional. Your project question may be easily answered using an optional argument, remember that!
+Besides reading lots and lots of cientific papers, do not forget that Google can help you a lot! Pages like https://www.biostars.org/ and http://seqanswers.com/ can solve your errors and doubts most of the times.
+
+GENERAL WORKLOW
+For each step:
+1. read the README.step, placed in each directory
+2. study the basics of the tool(s) involved and take a look in the help_tool.txt, also available for each new tool by step.
+3. identify your input files and make sure you know how to complete sentences like this:
+In this step, the 'tool' will take my 'input' and 'do something' in order to 'something', by 'doing this' and 'doing that' to each sequence, generating the 'output file'.
+Another example:
+The 'input' from 'this step' is the output from the 'tool' ran in 'that step', when the 'sequences were...'.
+Real example:
+The 'formatted barcode files' used in the 'demultiplex step' are required as input to 'cutadapt' in 'read cleaning step' in order to 'remove the tags' from the 'demultiplexed samples'.
+
+4. edit your bash script and slurm job with your filenames and your job preferences. By default the tools which allow multithreading are set to 4 cpus running in one node with 4GB RAM each.The remaining tools are set to 1 cpu and 8GB RAM. Read each tool documentation to not waste queue time, because you can ask (and wait) for 16GB RAM for a tool which needs at most 2GB.
+5. If you know that your job is really heavy and demanding, you should use the slurm SCRATCH system. Read about it here: https://documentation.sigma2.no/jobs/running-scientific-software.html?highlight=scratch#slurm
+5. run your job: sbatch run_my_job.slurm
+6. keep track: squeue -u my_user
+7. If you prefer to run in bash instead of slurm job, you can ask the queue system to allocate compute resources for you and once assigned, you can run the commands in the command line during the time requested (max 2:00 hours):
+Ex 1: ask for 1 cpu running with 4GB RAM for 2 hours. Good for bash work, editing files, practicing linux and so on
+srun --ntasks=1 --mem-per-cpu=4G --time=02:00:00 --qos=devel --account=nn9623k --pty bash -i
+Ex 2: ask for 4 cpus, 4GB RAM each, running for 1 hour. The amount of resources and the time requested must be balanced. If you call 4 cpus, or 16GB RAM, you must ask for around 1 hour, otherwise it will last too much grant your request
+srun --ntasks=4 --mem-per-cpu=4G --time=01:00:00 --qos=devel --account=nn9623k --pty bash -i
+Read more here: https://documentation.sigma2.no/jobs/interactive_jobs.html
+8. if you get an error:
+	a. read the slurm.log file
+	b. copy it and paste the error or warning on google, most of the time someone already asked it
+	c. permission denied: run a global permission in your directory: chmod 776 *
+	
+....still editing.... March 10, 2021 
+
+Have fun!
+

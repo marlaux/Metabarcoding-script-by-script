@@ -1,0 +1,31 @@
+The two wrapped scripts tag_primer_clipping_part1.sh and tag_primer_clipping_part2.sh are almost identical to  the pipeline available in the following address:
+https://github.com/frederic-mahe/swarm/wiki/Fred's-metabarcoding-pipeline
+
+The part 1 removes the tags and the primers. Edit the following variables with yours:
+PRIMER_F1, PRIMER_R1, PRIMER_F1_RC, PRIMER_R1_RC:
+The following website gives you the reverse complement, even for degenerated primers: http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
+
+line 21, your work address
+-a file:Barcodes_LA1.fa argument is the same barcode files formatted for cutadapt in linked mode, just copy them here
+
+If you kept the --lowercase argument, you must run the 2 commands in chain. 
+Since the two commands run in chain, you can make the first output 'trim1.fq' a temporary file:
+TRIM1=$(mktemp)
+then call it in the next command like this:
+for file in "${TRIM1}"; do...
+You can do this whenever you know that an output goes forward, leaving unused files. But sometimes Saga gives you a tmp error, so a let all outputs as files.
+You can also simply remove it, by adding the command:
+rm *_trim1.fq
+inside the script
+
+The part 2 do several cleanings and reformat headers, convert fq to fa, sort, dereplicates by sample and create a quality file.
+If you prefer to run another commands and options, be sure about the expected INPUT format from the next steps, a simple 'space' in the wrong way can make you waste a lot of time. 
+
+After finishing and succesfully ran the next step, the Clustering, you can remove the following unnecessary files from step 3_read_cleaning:
+
+rm *_trim1.fq
+rm *_trim3.fq
+rm -r format (-r because is a directory)
+
+
+

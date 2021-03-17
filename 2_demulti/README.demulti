@@ -1,0 +1,67 @@
+If you are not familiar with this step, please read all the orientation:
+For all demultiplexing strategies based on cutadapt the mapping file must be a tab separated text file like this:
+
+head my_mapping_file.txt
+sample1   	AGGTACGCAATT	CCTAAACTACGG
+sample2    	ACAGCCACCCAT	CCTAAACTACGG
+sample3    	TGTCTCGCAAGC	CCTAAACTACGG
+
+then we format it according to your tag primer design using the perl script preparing_tags_LCPI.pl. The dominant tag orientation for Illumina dual index merged pairs: (3'tagF)...(5'RCtagR)
+
+merged R1-R2 Illumina files = linked mode:
+head Barcodes_LA.fa
+>sample1    	
+^AGGTACGCAATT...CCGTAGTTTAGG$
+>sample2    	
+^ACAGCCACCCAT...CCGTAGTTTAGG$
+>sample3    	
+^TGTCTCGCAAGC...CCGTAGTTTAGG$
+The ^5' anchoring is default since Cutadapt version 2. The anchoring from both ends, ^5' ... 3'$ gives you the best sequence by sample, but you always can take a look in the 'unknown.fastq' to search for mismatches that could be forgiven.
+
+paired files, combinatorial
+usual design F1-R1,F2-R1,F3-R1...F1-R9,F2-R9,F3-R9
+The barcode files are only converted to fasta end separated:
+Barcodes_F.fa   Barcodes_R.fa
+>Sample1        >Sample1
+CCTAAACTACGG    CCTAAACTACGG
+>Sample2        >Sample2
+CCTAAACTACGG    TGCAGATCCAAC
+read more:
+it is necessary to write each read pair to an output file depending on the adapters found on R1 and R2 using {name1} and {name2}, which will be replaced with the name of the best-matching F1 and R1 adapter.
+https://cutadapt.readthedocs.io/en/stable/guide.html#combinatorial-demultiplexing
+
+paired files,  unique
+non-reduntant indexing or unique dual indexing strategy presents the highest accuracy, since the index sequences for i5 and i7 are unrelated, ie there is not F1->F8 repeating over R1-R12
+https://support.illumina.com/bulletins/2018/08/understanding-unique-dual-indexes--udi--and-associated-library-p.html
+
+Single-end, Ion torrent dual indexed
+The four possible directions of F-R tags are necessary, and they are searched exactly the same way as for linked mode.
+                        push (@tags_alt_1, (">$sample\n$tag_F...$RCtagR\n"));
+                        push (@tags_alt_2, (">$sample\n$RCtagF...$tag_R\n"));
+                        push (@tags_alt_3, (">$sample\n$tag_R...$RCtagF\n"));
+                        push (@tags_alt_4, (">$sample\n$RCtagR...$tag_F\n"));
+
+###########################################################################
+The argument --lowercase is optional, but I suggest to keep it, you can verify your demultiplexed sequences by samples before actually removing it the next step.
+Before the tags and primers clipping, be sure to check the tags and primers in lowercase using, for example, grep commands:
+1. Have a look if the dual tags by sample are in place:
+Choose any demultiplexed sample:
+head my_sample1.fq
+@M01334:388:000000000-JBK78:1:1107:9798:24822 1:N:0:CTCTCGTC+TATAACCT
+atctagtggcaaACCTCGCAGGTGTCTCCTCTATCTTAGGAGCTGTgtggtatgggag
+check if the tags (lowercase) are complete (12bp) or partial, in this example complete, then search for this particular tag pair by running a double grep in your original mapping file:
+cat my_mapping_file.tab | grep --color=auto -E -i "atctagtggcaa" my_barcodes.txt | grep "gtggtatgggag"
+AIP1a_D ATCTAGTGGCAA    GTGGTATGGGAG
+Great, its the same sample name, my_sample1, try some more randomly
+2. count sequences
+grep -c "^@" > count by line started ( ^ ) as fastq header ( @ ) and the first header letter after '@'
+the same, for fasta:
+grep -c "^>" my_file.fasta
+you can also manually count your demultiplexed sequences:
+grep -c -E 'TGCAGATCCAAC|GTTGGATCTGCA' my_file.fasta --> any direction
+grep -c -E '^TGCAGATCCAAC|^GTTGGATCTGCA' my_file.fasta --> only 3'-> 5' direction
+
+You can check the primers by the same way.
+
+
+

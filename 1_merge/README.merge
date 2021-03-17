@@ -1,0 +1,21 @@
+MERGING STEP -> PEAR 
+1. Open the merging_pear.sh and replace the name of your original fastq files R1 and R2
+2. Pear works with compressed files, you can keep the fastq compressed '.gz'
+3. Choose a short and clear name for the output, because this name will be in all your workflow files and the filename will be followed by '.assembled.fastq'
+4. Only the assembled output goes forward, but it is a good practice to check your unassembled, if any
+5. Check all the different arguments that you can use in the Pear_help.txt
+
+!!!TIPS FOR ANY SCRIPT!!!
+If you would like to add an extra argument, for example increase the minimum assembled read length to 100bp (default: 50)
+set your extra argument:
+MINLENGTH="100"
+and add it anywhere in the command line:
+-t ${MINLENGTH}
+
+You still may want to clean the command for redundant or default arguments. As you will see in the next steps, it is not necessary to remove uncalled (N's) bases right now, because this is part of the 3_read_cleaning step, so to remove it from the command, its just delete it. 
+But pay attention to the command, if it is vertical, you mas ensure that each argument is followed by a ' \ ', since its presence indicates that the next line is still part of the command, up to the last onw, where there is no sign after ${OUTPUT}
+-r ${INPUT_R}  \
+-o ${OUTPUT}
+
+
+

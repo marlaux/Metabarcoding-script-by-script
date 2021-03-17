@@ -1,0 +1,2 @@
+WARNING: The derep_fulllength command does not support multithreading.
+Only 1 thread used.
