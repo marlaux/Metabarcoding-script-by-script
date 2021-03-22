@@ -1,0 +1,31 @@
+ATTENTION!!! THIS FILE IS STILL BEING EDITED
+BUT YOU CAN USE, WHAT I AM DOING IS IMPROVE THE INPUT/OUTPUT FILENAMES AND MORE DYNAMIC FLOW THROUGHOUT THE COMMAND CHAIN. 
+IF YOU WOULD LIKE TO WAIT, I BELIEVE IT WILL BE DONE BY TOMORROW EVENING (MARCH 23)
+
+DOWNLOADING REFERENCES:
+Download your references directly from NCBI taxonomy page
+
+The genbank sequence header format is like this:
+>MW621368.1 Chydorus sphaericus complex sp. Ch129_Vietnam cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial
+AGCGGGTACAGGTTGAACTGTTTACCCACCTTTATCGGCTGGAATCGCTCATTCAGGAGCTTCAGTTGATAGCGGGTACAGGTTGAACTGTTTACCCACCTTTATCGGCTGGAATCGCTCATTCAGGAGCTTCAGTTGAT
+
+But what we need is:
+>AB812619.1 Eukaryota|Arthropoda|Insecta|Coleoptera|Curculionidae|Xyleborus|Xyleborus+defensus
+AACTTTATATTTTATCTTTGGGGCTTGAGCAGGAATAGTGGGAACTTCCTTAAGTGTATT
+
+The format_NCBI2lineages.sh script does it for us.
+You only need to open it and change the name of your references fasta file just downloaded:
+vi format_NCBI2lineages.sh
+type 'i' for insert if you are using 'vi'
+edit the name within the double quotes in "DATABASE" variable.
+change 'my_reference' from your taxa target in "FORMATTED_DB"
+You can leave the filenames as they are, with my_reference in the beginning, or use a sed command to edit it with your chosen name at once:
+sed 's/my_reference/chosen_name/g' format_NCBI2lineages.sh > format_NCBI2lineages_edit.sh
+quit saving
+
+be sure that you have the following files in your directory:
+edit_lineage.pl
+remove_dups.pl
+nucl_gb.accession2taxid.gz
+taxonkit
+references_downloaded.fasta
