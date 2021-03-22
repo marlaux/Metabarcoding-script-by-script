@@ -1,0 +1,25 @@
+#######################################
++++++++TAXONOMIC ASSIGNMENT STEP+++++++
+#######################################
+
+The strategy chosen and methods adopted vary between researchers and teams, accordingly to the projects goals.
+The clustering step is present in most of the studies, and it is the way through the METAPIPE pipeline, but the taxonomic assignment can also be done for individual dereplicated samples from step 4, for example.
+
+The taxa assignment is most frequently performed using:
+
+>>Alignment-based technique: direct sequence similarity comparison between query and reference sequences based on local alignments --> BLAST, NCBI, fast
+	>Best hit --> most frequently used
+	>LCA (Last Common Ancestor): phylogenetic placement according to local alignments --> MEGAN
+
+>>Sequence composition-based techniques: similarity through multiple alignment (HMM models) --> QIIME, computationally expensive
+
+>>Global pairwise sequence comparison: filtering based on k-mers, followed by optimal alignment of the query with the most promising reference candidates --> VSEARCH, computationally expensive but the full dynamic programming compensates the extra cost
+
+Future additions to the repository will include more options for the taxa assignment step. I present here the first and more frequently adopted strategy: BLASTN against local or remote NCBI databases.
+	LOCAL: based on downloaded set of sequences from a specific taxonomic group or any other NCBI search and filtering options --> more variable amplicons, search for population-level traits. The reference database formatting sub-step is needed.
+	REMOTE: general search against all NCBI nucleotide database --> more conserved amplicons, biodiversity discovery, screening, inventory... 
+
+There is a path in SAGA where the complete database is placed: /cluster/shared/databases/blast/25-10-2019/nt
+
+
+
