@@ -3,7 +3,7 @@
 #VSEARCH=$(which vsearch)
 #SWARM=$(which swarm)
 TMP_FASTA=$(mktemp --tmpdir=".")
-FINAL_FASTA="training_set_global_dp.fas"
+FINAL_FASTA="my_training_set_global_dp.fas"
 LENGTH=380 ###according to your expected amplicon lenght
 
 
