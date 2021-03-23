@@ -1,19 +1,14 @@
-ATTENTION!!! THIS FILE IS STILL BEING EDITED
-BUT YOU CAN USE, WHAT I AM DOING IS IMPROVE THE INPUT/OUTPUT FILENAMES AND MORE DYNAMIC FLOW THROUGHOUT THE COMMAND CHAIN.
-IF YOU WOULD LIKE TO WAIT, I BELIEVE IT WILL BE DONE BY TOMORROW EVENING (MARCH 23)
-
-
-LOCAL ALIGNMENT BASED STRATEGY FOR FAST TAXONOMIC ASSIGNMENT AND AMPLICOM TARGET SCREENING
+LOCAL ALIGNMENT BASED STRATEGY FOR FAST TAXONOMIC ASSIGNMENT AND AMPLICON TARGET SCREENING
 
 1.edit the Blast.sh script:
->>>FASTA1="training_set_global_dp_1f_representatives.fas" --> the output from clustering step.
->>>FASTA2="training_set_global_dp_2f_representatives.fas" --> copy the name and change to 2f
+>>>FASTA1="my_training_set_global_dp_1f_representatives.fas" --> the output from clustering step.
+>>>FASTA2="my_training_set_global_dp_2f_representatives.fas" --> copy the name and change to 2f
 >>>LOCAL_DB="Xyleborus_lineage_formated.fasta.uniq.fasta" --> this is the format_NCBI2lineages.sh output, remember to rename using 'sed' (see README.format)
 
 >>>Blast parameters, change as you'd like. Take a look for help here:
 https://www.ncbi.nlm.nih.gov/books/NBK279684/ --> take a special look in the command-line application: outfmt
 
->>>PREFIX_IN="training_set"
+>>>PREFIX_IN="my_training_set"
 >>>PREFIX_DB="Xyleborus"
 It is a reasonable way to not mix your results or forget which input you ran with that taxa. Just a suggestion.
 
