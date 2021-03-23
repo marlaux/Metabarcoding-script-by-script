@@ -5,8 +5,8 @@ module load PEAR/0.9.11-GCCcore-9.3.0
 
 
 
-INPUT_F="My_training_set_R1.fastq"
-INPUT_R="My_training_set_R2.fastq"
+INPUT_F="training_set_R1_subsampled.fastq"
+INPUT_R="training_set_R2_subsampled.fastq"
 THREADS="4"
 PVALUE="0.001"  #Specify  a p-value for the statistical test
 OVERLAP="20"      #Specify the minimum overlap size.
