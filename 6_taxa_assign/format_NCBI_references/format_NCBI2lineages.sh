@@ -44,11 +44,6 @@ module load BioPerl/1.7.2-GCCcore-8.2.0-Perl-5.28.1
 perl remove_dups.pl
 
 
-##PRIMER CUT, NOT FINISHED
-#sequences lowercase
-#awk '/^>/ {print($0)}; /^[^>]/ {print(tolower($0))}' Fragment1_acc_ed2.fasta > Fragment1_lineage_formated.fasta
-
-#./references_primer_cut.sh
 
 
 
