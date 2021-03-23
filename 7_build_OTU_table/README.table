@@ -1,4 +1,29 @@
-ATTENTION!!! THIS FILE IS STILL BEING EDITED
-BUT YOU CAN USE, WHAT I AM DOING IS IMPROVE THE INPUT/OUTPUT FILENAMES AND MORE DYNAMIC FLOW THROUGHOUT THE COMMAND CHAIN.
-IF YOU WOULD LIKE TO WAIT, I BELIEVE IT WILL BE DONE BY TOMORROW EVENING (MARCH 23)
+The build_OTU_table.sh script compile all outputs generated since dereplication step using the OTU_contingency_table.py python script written by Frédéric Mahe and available in the following link:
+https://github.com/frederic-mahe/swarm/wiki/Fred's-metabarcoding-pipeline
+
+You must edit the script with your output filenames:
+vi build_OTU_table.sh
+>>>FASTA="training_set_global_dp.fas" --> the global dereplication output, generated both in 4_dereplication step or in the 5_clustering step, inside the wrapped clustering script. Keep the '.fas' suffix, instead of .fasta or .fa
+>>>SCRIPT="OTU_contingency_table.py" --> do not change this. Be sure that this python script is within your 7_build_OTU_table directory.
+>>>STATS="${FASTA/.fas/.stats}" --> do not change, copy the my_training_set.stats from 5_clustering step here:
+cp ../5_clustering/*.stats .
+>>>SWARMS="${FASTA/.fas/.swarms}" --> do not change, copy the my_training_set.swarms from 5_clustering step here:
+cp ../5_clustering/*.swarms .
+>>>REPRESENTATIVES="${FASTA/.fas/_1f_representatives.fas}" --> do not change, copy the my_training_set_1f_representatives.fas from 5_clustering step here:
+cp ../5_clustering/*representatives.fas .
+>>>UCHIME="${FASTA/.fas/_1f_representatives.uchime}" --> do not change, copy the my_training_set_1f_representatives.uchime from 5_clustering step here:
+cp ../5_clustering/*representatives.uchime .
+>>>ASSIGNMENTS="Blast_results_formatted2OTUtable.tab" --> copy the formatted blast output from 6_taxa_assign step:
+cp ../6_taxa_assign/alignment_based_local_db/Blast_results_formatted2OTUtable.tab .
+>>>QUALITY="my_training_set_quality_file.qual" --> copy the quality file generated in 3_read_cleaning step, tag_primer_clipping_part2.shor extract_quality.sh script
+cp ../3_read_cleaning/my_training_set_quality_file.qual .
+>>>OTU_TABLE="training_set_OTU_table_complete.tab" --> give a name for your final OTU table. I suggest keep the "complete" in the filename, because we are going to cut and filter it in the following steps.
+>>>SAMPLES INPUT: if you kept all the suggested filenames, you do not need to edit it.
+
+After gathering all your seven inputs + dereplicated samples, you just need to run it in bash, if you asked for allocated resources as previously explained in the main page, README.general file:
+srun --ntasks=1 --mem-per-cpu=8G --time=02:00:00 --qos=devel --account=nn9623k --pty bash -i
+./build_OTU_table.sh
+
+or using job queue:
+sbatch run_OTU_table.slurm
 
