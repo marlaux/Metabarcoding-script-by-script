@@ -1,0 +1,22 @@
+The filter_OTU_table.sh script allows you to select the OTU table fields and keep only those OTUs which match to your thresholds.
+By default the script removes amplicons identified as chimeras according to uchime.
+
+vi filter_OTU_table.sh
+>>>TABLE="my_training_set_OTU_table_complete.tab" --> the complete OTU table generated in the 7_build_OTU_table step. Keep it with '.tab' suffix.
+>>>FILTERED="${TABLE/.tab/_f1.tab}" --> do not change, output for filtered complete table.
+>>>CUT2PHYLOSEQ="${FILTERED/_f1.tab/_f1_cut2phyloseq.tab}" --> output for filtered and field selected OTU table, according to the Phyloseq input format.
+>>>MY_FAVORITE_TAXA="Eukaryota" --> change according your need. Edit if you would like to create separate tables for each target taxonomic group. 
+
+The following sentence:
+awk '$7 == "N" && $9 <= 0.0002 && ($2 >= 5 || $8 >= 2)'
+is asking for no-chimeras ($7), minimum error rate 0.0002, minimum OTU abundance 5and minimum occurrence by samples 2.
+>>>The minimum error rate you can check and choose according to the file my_samples_quality_file.ee
+>>>the number of samples should be correspondent to 5% or 10% of occurrence frequency. Depending of each case, you can count by replicate or by sample, but you should justify it.
+
+The following sentence:
+awk '{ ratio = $2/$3; print $0, ratio }' my_samples_quality_file.qual > my_samples_quality_file.ee
+is calculanting the quality threshold through the ratio between the expected error and sequence length, both found in the quality file.
+
+The last sentence:
+cat "${FILTERED}" | cut -f 4,14- | sed 's/_dp//g' > "${CUT2PHYLOSEQ}"
+is printing only the amplicon name and abundance by sample, in order to be loaded and merged as a phyloseq object.
