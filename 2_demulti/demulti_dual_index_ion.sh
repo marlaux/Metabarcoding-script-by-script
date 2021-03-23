@@ -13,7 +13,7 @@
 #the perl script should create 4 files Barcodes_alt1.fa to Barcodes_alt4.fa 
 
 
-INPUT="my_project_my_marker.assembled.fastq"
+INPUT="my_ion_dual_index_single_read.fastq"
 PAIR1="Barcodes_alt1.fa"
 PAIR2="Barcodes_alt2.fa"
 PAIR3="Barcodes_alt3.fa"
