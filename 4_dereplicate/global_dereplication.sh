@@ -1,5 +1,5 @@
 TMP_FASTA=$(mktemp --tmpdir=".")
-FINAL_FASTA="my_samples_global_derep.fas"
+FINAL_FASTA="my_training_set_global_dp.fas"
 
 
 module --force purge
