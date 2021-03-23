@@ -21,7 +21,7 @@ module load StdEnv
 module load cutadapt/2.10-GCCcore-9.3.0-Python-3.8.2
 
 
-INPUT="training_set.assembled.fastq"
+INPUT="my_training_set.assembled.fastq"
 PAIR1="Barcodes_LA1.fa"
 PAIR2="Barcodes_LA2.fa"
 PAIR3="Barcodes_LA3.fa"
