@@ -32,8 +32,8 @@
 #https://cutadapt.readthedocs.io/en/stable/guide.html 
 #https://support.illumina.com/bulletins/2018/08/understanding-unique-dual-indexes--udi--and-associated-library-p.html
 
-INPUT_F="training_set_R1.fastq"
-INPUT_R="training_set_R2.fastq"
+INPUT_F="training_set_R1_subsampled.fastq"
+INPUT_R="training_set_R2_subsampled.fastq"
 TAG_F="Barcodes_F.fa"
 TAG_R="Barcodes_R.fa"
 
