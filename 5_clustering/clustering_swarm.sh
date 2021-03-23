@@ -6,7 +6,7 @@ module load swarm/3.0.0-GCC-9.3.0
 
 #COPY HERE THE GLOBAL DEREP FASTA FILE FROM 4_DEREPLICATE FOLDER
 THREADS="1"
-FINAL_FASTA="my_samples_global_derep.fas"
+FINAL_FASTA="my_training_set_global_dp.fas"
 swarm     \
     -d 1 -f -t ${THREADS} -z \
     -i ${FINAL_FASTA/.fas/.struct} \
