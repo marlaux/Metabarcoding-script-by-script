@@ -6,7 +6,7 @@ module load StdEnv
 module load VSEARCH/2.13.4-iccifort-2019.1.144-GCC-8.2.0-2.31.1
 
 
-FINAL_FASTA="my_project_global_derep.fas"
+FINAL_FASTA="my_training_set_global_derep.fas"
 TMP_FASTA=$(mktemp)
 THREADS="4"
 
