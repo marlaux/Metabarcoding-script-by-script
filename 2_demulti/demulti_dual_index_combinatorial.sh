@@ -38,7 +38,7 @@ TAG_F="Barcodes_F.fa"
 TAG_R="Barcodes_R.fa"
 
 cutadapt \
-    -e 0.1 --no-indels \
+    --no-indels \
     -g file:${TAG_F} \
     -G file:${TAG_R} \
     -o {name1}-{name2}_1.fq -p {name1}-{name2}_2.fq \
