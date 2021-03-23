@@ -1,5 +1,4 @@
 #/bin/bash
-#module load cutadapt/1.18-foss-2018b-Python-3.6.6
 
 #You can get your primers reverse complement in this website:
 #http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
