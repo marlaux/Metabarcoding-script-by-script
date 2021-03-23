@@ -1,7 +1,3 @@
-ATTENTION!!! THIS FILE IS STILL BEING EDITED
-BUT YOU CAN USE, WHAT I AM DOING IS IMPROVE THE INPUT/OUTPUT FILENAMES AND MORE DYNAMIC FLOW THROUGHOUT THE COMMAND CHAIN. 
-IF YOU WOULD LIKE TO WAIT, I BELIEVE IT WILL BE DONE BY TOMORROW EVENING (MARCH 23)
-
 DOWNLOADING REFERENCES:
 Download your references directly from NCBI taxonomy page
 
@@ -24,8 +20,8 @@ sed 's/my_reference/chosen_name/g' format_NCBI2lineages.sh > format_NCBI2lineage
 quit saving
 
 be sure that you have the following files in your directory:
-edit_lineage.pl
-remove_dups.pl
+edit_lineage.pl --> check input name!!!
+remove_dups.pl --> check input name!!!
 nucl_gb.accession2taxid.gz
 taxonkit
 references_downloaded.fasta
