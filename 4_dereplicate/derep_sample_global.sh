@@ -11,13 +11,7 @@ TMP_FASTA=$(mktemp)
 THREADS="4"
 
 #Dereplicate by sample
-for file in /cluster/projects/nn9623k/metapipe/3_read_cleaning/fastas/*_f1.fasta; do pre="$(basename $file _f1.fasta)"; echo $pre; \
-	vsearch --quiet --threads ${THREADS}	\
-	--derep_fulllength $file	\
-	--sizeout	\ 
-	--fasta_width 0	\
-	--relabel_sha1	\ 
-	--output ${pre}_dp.fasta 2>> ${pre}_dp.log; done;
+for file in /cluster/work/users/marlaux/GITHUB/METAPIPE/3_read_cleaning/fastas_bash/*_f1.fasta; do pre="$(basename $file _f1.fasta)"; echo $pre; vsearch --quiet --threads ${THREADS} --derep_fulllength $file --sizeout --fasta_width 0 --relabel_sha1 --output ${pre}_dp.fasta 2>> ${pre}_dp.log; done;
 
 #Global dereplication: pool sequences from samples
 cat cluster/projects/nn9623k/metapipe/3_read_cleaning/fastas/*.fasta > "${TMP_FASTA}"
