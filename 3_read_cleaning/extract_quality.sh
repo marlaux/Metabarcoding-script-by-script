@@ -1,7 +1,7 @@
 #/bin/bash
 
 TAGS="barcodes_subsample.txt"
-QUALITY_FILE="my_samples_quality_file.qual"
+QUALITY_FILE="my_training_set_quality_file.qual"
 
 for f in *_trim3.fq; do pre="$(basename $f _trim3.fq)"; echo $pre; \
         sed 'n;n;N;d' $f | \
