@@ -22,13 +22,12 @@ cat /cluster/projects/nn9623k/metapipe/3_read_cleaning/dereplicated/*.fasta > "$
              --fasta_width 0 \
 	     --output "${FINAL_FASTA}" > /dev/null
 
-#rm -f "${TMP_FASTA}"
+rm -f "${TMP_FASTA}"
 
 module --force purge
 module load StdEnv  
 module load swarm/3.0.0-GCC-9.3.0
 
-#SWARM=$(which swarm)
 THREADS="4"
 TMP_REPRESENTATIVES=$(mktemp --tmpdir=".")
 
@@ -44,7 +43,6 @@ module load StdEnv
 module load VSEARCH/2.13.4-iccifort-2019.1.144-GCC-8.2.0-2.31.1
 
 # Sort representatives
-#VSEARCH=$(which vsearch)
 vsearch	\
 	--fasta_width 0 \
         --sortbysize ${TMP_REPRESENTATIVES} \
