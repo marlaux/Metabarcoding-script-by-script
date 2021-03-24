@@ -25,15 +25,13 @@ done < "${TAGS}"
 sort -k3,3n -k1,1d -k2,2n tmp_qual.txt | \
    uniq --check-chars=40 > "${QUALITY_FILE}"
 
-for file in *_trim3.fq; do pre="$(basename $file _trim3.fq)"; echo $pre; vsearch --fastq_filter $file --fastq_maxns 0 --threads ${THREADS} --fastaout ${pre}_f1.fasta; done;
+for file in *_trim3.fq; do pre="$(basename $file _trim3.fq)"; echo $pre; vsearch --quiet --fastq_filter $file --fastq_maxns 0 --threads ${THREADS} --fastaout ${pre}_f1.fasta; done;
 
 mkdir format
 mv *_trim3.fq format
 rm tmp_qual.txt
 
-for file in *_f1.fasta; do pre="$(basename $file _f1.fasta)"; echo $pre; vsearch --quiet --threads ${THREADS} --derep_fulllength $file --sizeout --fasta_width 0 --relabel_sha1 --output ${pre}_dp.fasta; done;
-
-mkdir fastas
+for file in *_f1.fasta; do pre="$(basename $file _f1.fasta)"; echo $pre; vsearch --quiet --derep_fulllength $file --sizeout --fasta_width 0 --relabel_sha1 --output ${pre}_dp.fasta; 
 mv *_f1.fasta fastas
 mkdir dereplicated
 mv *_dp.fasta dereplicated
