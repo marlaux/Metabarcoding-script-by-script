@@ -21,10 +21,10 @@ THREADS="4"
 #for sequential structure:
 	#IF YOU ARE RUNNING SEQUENTIALLY IN AN UNIQUE FOLDER, USE:
 #for file in demulti_linked/*_LA.fq;
-for file in /cluster/projects/nn9623k/metapipe/2_demulti/demulti_linked/*_LA.fq; do pre="$(basename $file _LA.fq)"; echo $pre; cutadapt -j ${THREADS} -a file:Barcodes_LA3.fa -a file:Barcodes_LA1.fa -a file:Barcodes_LA2.fa --discard-untrimmed --minimum-length ${MIN_LEN} -o ${pre}_trim1.fq $file; done;
+for file in /cluster/projects/nn9623k/metapipe/2_demulti/demulti_linked/*_LA.fq; do pre="$(basename $file _LA.fq)"; echo $pre; cutadapt --quiet -j ${THREADS} -a file:Barcodes_LA3.fa -a file:Barcodes_LA1.fa -a file:Barcodes_LA2.fa --discard-untrimmed --minimum-length ${MIN_LEN} -o ${pre}_trim1.fq $file; done;
 
 
-for f in *_trim1.fq; do pre="$(basename $f _trim1.fq)"; echo $pre; cutadapt -j ${THREADS} -a "^${PRIMER_F1}...${PRIMER_R1_RC}" -O "${MIN_F1}" -a "^${PRIMER_R1}...${PRIMER_F1_RC}" -O "${MIN_F1}" --minimum-length ${MIN_LEN} -o ${pre}_trim2.fq $f; done;
+for f in *_trim1.fq; do pre="$(basename $f _trim1.fq)"; echo $pre; cutadapt --quiet -j ${THREADS} -a "^${PRIMER_F1}...${PRIMER_R1_RC}" -O "${MIN_F1}" -a "^${PRIMER_R1}...${PRIMER_F1_RC}" -O "${MIN_F1}" --minimum-length ${MIN_LEN} -o ${pre}_trim2.fq $f; done;
 
 mkdir clipped
 mv *.fq clipped/
