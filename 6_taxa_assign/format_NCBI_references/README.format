@@ -9,19 +9,17 @@ But what we need is:
 >AB812619.1 Eukaryota|Arthropoda|Insecta|Coleoptera|Curculionidae|Xyleborus|Xyleborus+defensus
 AACTTTATATTTTATCTTTGGGGCTTGAGCAGGAATAGTGGGAACTTCCTTAAGTGTATT
 
-The format_NCBI2lineages.sh script does it for us.
-You only need to open it and change the name of your references fasta file just downloaded:
-vi format_NCBI2lineages.sh
-type 'i' for insert if you are using 'vi'
-edit the name within the double quotes in "DATABASE" variable.
-change 'my_reference' from your taxa target in "FORMATTED_DB"
-You can leave the filenames as they are, with my_reference in the beginning, or use a sed command to edit it with your chosen name at once:
-sed 's/my_reference/chosen_name/g' format_NCBI2lineages.sh > format_NCBI2lineages_edit.sh
-quit saving
+The format_NCBI2lineages_auto.sh script does it for us.
+Usage:
+./format_NCBI2lineages_auto.sh -r references_downloaded.fasta -p prefix2output
+For more details use help flag:
+The format_NCBI2lineages_auto.sh -h
 
 be sure that you have the following files in your directory:
-edit_lineage.pl --> check input name!!!
-remove_dups.pl --> check input name!!!
+edit_lineage.pl
+remove_dups.pl 
 nucl_gb.accession2taxid.gz
 taxonkit
 references_downloaded.fasta
+
+The format_NCBI2lineages_flags.sh options works the same way, but keeping all intermediary files stored in format_out directory.
