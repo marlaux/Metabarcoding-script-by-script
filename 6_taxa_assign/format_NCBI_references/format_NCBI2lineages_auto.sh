@@ -81,7 +81,7 @@ module --force purge
 module load StdEnv
 module load BioPerl/1.7.2-GCCcore-8.2.0-Perl-5.28.1
 
-perl remove_dups.pl "${TMP7}" "${PREFIX}_lineage"
+perl remove_dups.pl "${TMP7}" "${PREFIX}"
 
 rm tmp*
 
