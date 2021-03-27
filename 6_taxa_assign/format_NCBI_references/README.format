@@ -1,5 +1,6 @@
 DOWNLOADING REFERENCES:
-Download your references directly from NCBI taxonomy page
+Download your references directly from NCBI taxonomy page or using the Entrez efetch system. 
+./EntrezDirect.sh -h
 
 The genbank sequence header format is like this:
 >MW621368.1 Chydorus sphaericus complex sp. Ch129_Vietnam cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial
