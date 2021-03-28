@@ -1,0 +1,10 @@
+vsearch v2.13.4_linux_x86_64, 755.4GB RAM, 64 cores
+vsearch --usearch_global ./tmp.s5tXGlQXk1 --threads 4 --dbmask none --qmask none --rowlen 0 --notrunclabels --userfields query+id1+target --maxaccepts 0 --maxrejects 32 --top_hits_only --output_no_hits --db bold_primersX.fasta --id 0.85 --iddef 1 --userout hits.primersX_assign2.hits --log vsearch.log
+Started  Sun Mar 28 21:52:47 2021
+58161161 nt in 161785 seqs, min 265, max 584, avg 359
+
+Matching unique query sequences: 77 of 2829 (2.72%)
+
+Finished Sun Mar 28 21:53:16 2021
+Elapsed time 00:29
+Max memory 240.4MB
