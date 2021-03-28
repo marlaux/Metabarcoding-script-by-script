@@ -1,6 +1,6 @@
 LOCAL ALIGNMENT BASED STRATEGY FOR FAST TAXONOMIC ASSIGNMENT AND AMPLICON TARGET SCREENING
 
-1.edit the Blast.sh script:
+1.edit the BLAST.sh script:
 >>>FASTA1="my_training_set_global_dp_1f_representatives.fas" --> the output from clustering step.
 >>>FASTA2="my_training_set_global_dp_2f_representatives.fas" --> copy the name and change to 2f
 >>>LOCAL_DB="Xyleborus_lineage_formated.fasta.uniq.fasta" --> this is the format_NCBI2lineages.sh output, remember to rename using 'sed' (see README.format)
