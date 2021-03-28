@@ -20,3 +20,5 @@ is calculanting the quality threshold through the ratio between the expected err
 The last sentence:
 cat "${FILTERED}" | cut -f 4,14- | sed 's/_dp//g' > "${CUT2PHYLOSEQ}"
 is printing only the amplicon name and abundance by sample, in order to be loaded and merged as a phyloseq object.
+
+The cut2phyloseq.tab and tax_assignments.txt outputs will be loaded in Phyloseq R package.
