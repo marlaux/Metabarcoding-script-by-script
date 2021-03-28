@@ -1,1 +1,15 @@
 Performs LCA based on MPA
+Method adapted from the following reference: https://github.com/frederic-mahe/stampa.git
+
+workflow:
+1.download your references
+  BOLD:
+2.run primers_cut.sh --> trim your references sequences according to your primers and add lineages in the header.
+  NCBI:
+  copy format_NCBI_references/my_training_set.uniq.fasta
+3.run stampadapt.sh -h 
+./stampadapt.sh -q my_training_set_global_dp_1f_representatives.fas -d BOLD_primersX.fasta -o primersX_BOLD 
+outputs: results.primersX_assign.hits, results.primersX_BOLD_LCA.hits and log:vsearch.log
+4.first steps to plot
+edit with your results output and run stampaplot.sh
+
