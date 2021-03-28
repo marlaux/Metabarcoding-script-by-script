@@ -2,7 +2,7 @@ module --force purge
 module load StdEnv
 module load BLAST+/2.10.1-iimpi-2020a
 
-FASTA="my_training_set_global_dp_1f_representatives.fas"
+FASTA="my_training_set_global_dp_2f_representatives.fas"
 NCBI_DB="/cluster/shared/databases/blast/25-10-2019/nt"
 LOCAL_DB="Arthropoda_COI.uniq.fasta"
 SIMILARITY_INT="90"
@@ -38,4 +38,4 @@ blastn -query $FASTA \
        #-evalue $EVALUE \
        #-parse_deflines \
        #-num_threads $THREADS \
-       #-outfmt "6 qseqid sscinames sseqid staxids stitle pident qcovs evalue" > ${PREFIX_IN}_NT_blast.log
+       #-outfmt "6 qseqid sscinames sseqid staxids stitle pident qcovs evalue" > ${PREFIX_IN}_NT_blast.tab
