@@ -1,0 +1,18 @@
+The R script metapipe_phyloseq.R presents how to load your files to work as a phyloseq object. 
+You need the clean OTU table, with the OTU names as row names and sample names as header.
+The tax_assignment text file also has the OTU names as row names, with respective lineage from kingdom to species tab separated. Optional identity field.
+The metadata tab separated text file is responsable for the sampling structure and variables constraints of your phyloseq object, allowing in deep data analysis. The first column is the SampleID (mandatory), exactly matching the sample names in OTU table. 
+Following SampleID field, columns describing important features from your data can be added freely (in fact, as much as better). 
+The format must be like this:
+SampleID	SampleName	season	Replicate
+AMa_I	Amazon_W_I	Winter  Amazon_W
+AMa_II	Amazon_W_II	Winter	Amazon_W
+AMb_I	Amazon_S_I	Summer	Amazon_S
+AMb_II	Amazon_S_II	Summer	Amazon_S
+
+After the loading step, there is some basic data checkings, just to help you become familiar with the functions.
+In the following subsetting step, you can create sub-tables, using the subsetting functions subset_samples and filter_taxa.
+Finally, two plot scripts are shown as an example of how we generate the nice and colorful barplots or any other kind of visual representation.
+The first is a script to illustrate the Top 50 profile from your most abundant OTUs, which gives you two important whole dataset features: skewness and main target taxa.
+The last script is creating a barplot to illustrate the taxonomical composition at a given taxa rank, after transforming the data to relative abundance.
+All other functionalities we can easily find using google, but if you need some help, dont hesitate to ask me :) 
