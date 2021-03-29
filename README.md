@@ -9,8 +9,8 @@ Baby steps...
 For those who have just started working with metabarcoding, there is a README for each step, along with a README for each script and the tools help (--help) pages, for those who still don't have access to a server or linux machine.
 
 Next steps...
-1 --> I'm working on running the taxa assignment stampa method, developed by Frédéric Mahe (https://github.com/frederic-mahe/stampa.git), which performs the LCA algorithm.
-2 --> I intent to add at least one extra tool/script for each analysis step, in order to create branches of analysis strategies.
+1 --> I'm working on including Mothur and QIIME pipelines along with each METAPIPE steps, as much user friendly as possible.
+2 --> For now the only METAPIPE branch running from sequencing to statistics is the local alignment BLAST do PHYLOSEQ. It works with NCBI and BOLD references. MOre detailes in README.workflow.
 
 Thank you for visiting my Github, I hope I can help :)
 
