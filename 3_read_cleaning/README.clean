@@ -1,31 +1,63 @@
-The two wrapped scripts tag_primer_clipping_part1.sh and tag_primer_clipping_part2.sh are almost identical to  the pipeline available in the following address:
+The scripts available for now are adaptations based on the pipeline available in the following address:
 https://github.com/frederic-mahe/swarm/wiki/Fred's-metabarcoding-pipeline
+The following script does the whole step at once:
 
-The part 1 removes the tags and the primers. Edit the following variables with yours:
-PRIMER_F1, PRIMER_R1, PRIMER_F1_RC, PRIMER_R1_RC:
+./tags_primers_clip_trim.sh -h
+##################################################
+Remove tags and primers from demultiplexed sample files and processes a series of format and cleaning steps, generating the quality file necessary for clustering, the fasta converted sample files and dereplicated by sample files..
+You can get your primers reverse complement in this website:
+http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
+
+Usage: ./tags_primers_clip_trim.sh [-F primerF] [-R primerR] [-f RCprimerF] [-r RCprimerR] [-l 50] [-p pwd] [-e 0.2] [-b barcode.txt] [-q name] [-t threads]
+-F     paste your primerF
+-R     paste your primerR
+-f     paste your reverse complement primerF
+-r     paste your reverse complement primerR
+-l     minimum length after trimming
+-p     complete directory where the demultiplexed samples are
+-e     maximum error rate allowed, higher more flexible
+-b     barcodes.txt, the original mapping file used as input for perl preparing_tags_LCPI.pl script.
+-t     number of threads
+-h     Print this Help
+##################################################
+
+The following script removes tags from any direction and works for any adapter, as long as the strings are provided in a txt file with 3 fields (even with only one line), 
+sample1 \ t ADAPTER \ t ADAPTER
+
+./tags_clip.sh -h
+##################################################
+Remove tags from demultiplexed sample files, without 3'-5' specific orientation.
+The tags mapping file must be in tab separated text file, with 3 columns:
+Sample1 ACGT    ACGT
+Sample2   ACGT    ACGT
+...
+Usage: ./tags_clip.sh [-m mapping file] [-l int] [-t threads]
+-p     complete directory where the demultiplexed samples are
+-b     mapping_file_tab_3fields.txt
+-l     minimum length after trimming
+-t     number of threads
+##################################################
+
+The third script removes adapters and primers keeping the original tags and primers design, e.g. the same pairs orientation used in demultiplexing step, 
+clipping and trimming reads with the exact pairs of tags and primers, while filtering out reads missing the strict dual index tags design.
+You must open and edit it:
+vi tags_primers_clip.sh
+
+To run this step using slurm job queue, you must use tag_primer_clipping_part1.sh and tag_primer_clipping_part2.sh scripts. There is no flag to help, because we can not 
+interact with jobs, so you need to open and edit them. Please avoid to change names and always try to keep the directory structure.
+
+Remember, you can ask SAGA for resources, so you can work interactively, with the allocated resources:
+srun --ntasks=1 --mem-per-cpu=8G --time=01:00:00 --qos=devel --account=nn9623k --pty bash -i
+
 The following website gives you the reverse complement, even for degenerated primers: http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
 
-line 21, your work address
--a file:Barcodes_LA1.fa argument is the same barcode files formatted for cutadapt in linked mode, just copy them here
-
-If you kept the --lowercase argument, you must run the 2 commands in chain. 
-Since the two commands run in chain, you can make the first output 'trim1.fq' a temporary file:
-TRIM1=$(mktemp)
-then call it in the next command like this:
-for file in "${TRIM1}"; do...
-You can do this whenever you know that an output goes forward, leaving unused files. But sometimes Saga gives you a tmp error, so a let all outputs as files.
-You can also simply remove it, by adding the command:
-rm *_trim1.fq
-inside the script
-
+Attention! The cutadapt default behaviour is to trim out the adapters after demultiplexing, but I left the action=lowercase argument in order to allow the adapters/tags/primers 
+visual inspection.
 The part 2 do several cleanings and reformat headers, convert fq to fa, sort, dereplicates by sample and create a quality file.
 If you prefer to run another commands and options, be sure about the expected INPUT format from the next steps, a simple 'space' in the wrong way can make you waste a lot of time. 
 
-After finishing and succesfully ran the next step, the Clustering, you can remove the following unnecessary files from step 3_read_cleaning:
 
-rm *_trim1.fq
-rm *_trim3.fq
-rm -r format (-r because is a directory)
+
 
 
 
