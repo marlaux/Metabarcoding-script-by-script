@@ -122,3 +122,5 @@ out: the complete version of the OTU table.
 
 18. filter_OTU_table.sh   in: OTU table   out: OTU table formatted to load in Phyloseq
 19. perl taxa_assignment_table.pl Blast_formatted2OTUtable.tab  out: final_OTU_tax_assignments.txt to load in Phyloseq
+20. script for loading your tables in phyloseq and some first steps: metapipe_phyloseq.R
+
