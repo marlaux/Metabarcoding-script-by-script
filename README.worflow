@@ -14,7 +14,8 @@ The step by step mode, on the other hand, runs each step and each script one aft
 is been done in each step. The step by step mode takes a longer time to run, because for each job you go back to the queue, but provides a deeper knowledge about the 
 Metabarcoding data processing, since the user must know not only the inputs and outputs, but also de intermediary files generated throughout the pipeline and why.
 
-STEP BY STEP WORKFLOW 		
+STEP BY STEP WORKFLOW
+###1_merge###
 1.merge_pear.sh	in: R1.fastq + R2.fastq out: .assembled.fastq
 ./merge_pear_auto.sh -h
 ##################################################
@@ -29,11 +30,12 @@ Usage: ./merge_pear_auto.sh [-f R1.fq] [-r R2.fq] [-o output] [-p 0.001] [-s 20]
 -t     threads
 -h     print this help
 ##################################################
+###2_demulti###
 2.'perl preparing_tags_LCPI.pl barcodes.txt' in: tab separated 3 columns barcodes.txt [sampleID \t tagF \t tagR] out: tags files in cutadapt format
 details in step 2_demulti:
 3.demulti_dual_index_linked.sh	in: .assembled.fastq + cutadapt formatted tags 	out: individual samples
 this step only works on SAGA job queue! Too heavy to run in bash, even using srun!
-
+###3_read_cleaning###
 4.complete read cleaning from tags and primers clipping to dereplicates samples:
 ./tags_primers_clip_trim.sh -h
 ##################################################
@@ -63,6 +65,7 @@ Script by script:
 9.global_dereplication.sh	in: dereplicated samples	out: concatenated globally dereplicated multifasta
 Edit tag_primer_clipping_part1.sh and tag_primer_clipping_part1.sh to run in SAGA slurm job
 
+###5_clustering###
 10. clustering step, complete chain, in: dereplicated samples	out: representatives/struct/swarms/uchime and concat global derep multifasta
 ./clustering_swarm_wrap.sh -h
 ##################################################
@@ -81,6 +84,7 @@ script by script:
 12.chimera_checking.sh	in: _1f_representatives.fas		out: in: _1f_representatives.uchime		
 clustering_swarm_complete.sh	to run using slurm job.
 
+###6_taxa_assign###
 FOR NCBI LOCAL ALIGNMENT STRATEGIES
 13 ./EntrezDirect.sh -h		in: my query  out: my_search_esearch.fasta
 ##################################################
@@ -115,11 +119,13 @@ in: _2f_representatives.fas/my_refs.uniq.fasta		out: your_project_local_blast.ta
 16 perl Blast_results_format.pl --> format BLAST output to work in OTU table and stampadapt.sh
 in: your_project_local_blast.tab		out: Blast_formatted2OTUtable.tab
 
+###7_build_OTU_table###
 17. Build OTU table:
 vi build_OTU_table.sh
 in: global derep fasta, clustering outputs, Blast_formatted2OTUtable.tab and quality file
 out: the complete version of the OTU table.
 
+###8_filter_table_phyloseq###
 18. filter_OTU_table.sh   in: OTU table   out: OTU table formatted to load in Phyloseq
 19. perl taxa_assignment_table.pl Blast_formatted2OTUtable.tab  out: final_OTU_tax_assignments.txt to load in Phyloseq
 20. script for loading your tables in phyloseq and some first steps: metapipe_phyloseq.R
