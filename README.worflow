@@ -4,7 +4,7 @@ Another goal is to include more than one method for each step, in order to final
 The scripts are presented as a chain of commands in step by step mode, along with wrapped scripts formatted to run in job queue or interactively using srun (scripts with flags).
 You can choose to run command by command, using independent little scripts, or using the wrapped scripts, allowing the user to view a help page and select the inputs dinamically.
 
-The wrapped mode performs the same tasks and generate the same outputs necessary for the chain connection, however, they only works in interactively session, allocating 
+The wrapped mode performs the same tasks and generate the same outputs necessary for the chain connection, however, it only works in interactively session, allocating 
 resources to work in command line using srun:
 srun --ntasks=1 --mem-per-cpu=8G --time=01:00:00 --qos=devel --account=nn9623k --pty bash -i
 
@@ -16,7 +16,7 @@ Metabarcoding data processing, since the user must know not only the inputs and 
 
 STEP BY STEP WORKFLOW
 ###1_merge###
-1.merge_pear.sh	in: R1.fastq + R2.fastq out: .assembled.fastq
+merge_pear.sh	in: R1.fastq + R2.fastq out: .assembled.fastq
 ./merge_pear_auto.sh -h
 ##################################################
 Merging of paired end fastq files from Illumina sequencing using Pear.
@@ -30,13 +30,15 @@ Usage: ./merge_pear_auto.sh [-f R1.fq] [-r R2.fq] [-o output] [-p 0.001] [-s 20]
 -t     threads
 -h     print this help
 ##################################################
+
 ###2_demulti###
-2.'perl preparing_tags_LCPI.pl barcodes.txt' in: tab separated 3 columns barcodes.txt [sampleID \t tagF \t tagR] out: tags files in cutadapt format
+perl preparing_tags_LCPI.pl barcodes.txt' in: tab separated 3 columns barcodes.txt [sampleID \t tagF \t tagR] out: tags files in cutadapt format
 details in step 2_demulti:
-3.demulti_dual_index_linked.sh	in: .assembled.fastq + cutadapt formatted tags 	out: individual samples
+demulti_dual_index_linked.sh	in: .assembled.fastq + cutadapt formatted tags 	out: individual samples
 this step only works on SAGA job queue! Too heavy to run in bash, even using srun!
+
 ###3_read_cleaning###
-4.complete read cleaning from tags and primers clipping to dereplicates samples:
+complete read cleaning from tags and primers clipping to dereplicates samples:
 ./tags_primers_clip_trim.sh -h
 ##################################################
 Remove tags and primers from demultiplexed sample files and processes a series of format and cleaning steps, generating the quality file necessary for clustering, the fasta converted sample files and dereplicated by sample files..
@@ -57,16 +59,18 @@ Usage: ./tags_primers_clip_trim.sh [-F primerF] [-R primerR] [-f RCprimerF] [-r 
 ##################################################
 
 Script by script:
-4.tag_primer_clipping_part1.sh	in: demultiplexed fastq samples	out: clipped and trimmed tags and primers
-5.read_trim.sh	in: clipped fastq samples	out: trimmed and header formatted fastq		
-6.convert2fasta.sh	in: clip/formatted fastq	out: clip/formatted fasta		
-7.extract_quality.sh	in: clip/formatted fastq 	out: quality text with error rate and length
-8.dereplicate_by_sample.sh	in: clip/formatted fasta 	out: dereplicated samples
-9.global_dereplication.sh	in: dereplicated samples	out: concatenated globally dereplicated multifasta
-Edit tag_primer_clipping_part1.sh and tag_primer_clipping_part1.sh to run in SAGA slurm job
+1.tag_primer_clipping_part1.sh	in: demultiplexed fastq samples	out: clipped and trimmed tags and primers
+2.read_trim.sh	in: clipped fastq samples	out: trimmed and header formatted fastq		
+3.convert2fasta.sh	in: clip/formatted fastq	out: clip/formatted fasta		
+4.extract_quality.sh	in: clip/formatted fastq 	out: quality text with error rate and length
+5.dereplicate_by_sample.sh	in: clip/formatted fasta 	out: dereplicated samples
+>>>>Edit tag_primer_clipping_part1.sh and tag_primer_clipping_part1.sh to run sequentially in SAGA slurm job
+
+###4_dereplicate###
+edit derep_sample_global.sh and run in slurm job
 
 ###5_clustering###
-10. clustering step, complete chain, in: dereplicated samples	out: representatives/struct/swarms/uchime and concat global derep multifasta
+clustering step, complete chain, in: dereplicated samples	out: representatives/struct/swarms/uchime and concat global derep multifasta
 ./clustering_swarm_wrap.sh -h
 ##################################################
 Global dereplication, clustering using SWARM, formatting and chimera searching wrapped script.
@@ -79,14 +83,15 @@ Usage: ./clustering_swarm_wrap.sh [-l length] [-o output] [-p pwd]
 ##################################################
 
 script by script:
-10.clustering_swarm.sh	in: concatenated globally dereplicated multifasta	out: representatives/struct/swarms/uchime
-11.sort_representatives.sh	in: _1f_representatives.fas		out: _2f_representatives.fas
-12.chimera_checking.sh	in: _1f_representatives.fas		out: in: _1f_representatives.uchime		
-clustering_swarm_complete.sh	to run using slurm job.
+1.global_dereplication.sh	in: dereplicated samples	out: concatenated globally dereplicated multifasta
+2.clustering_swarm.sh	in: concatenated globally dereplicated multifasta	out: representatives/struct/swarms/uchime
+3.sort_representatives.sh	in: _1f_representatives.fas		out: _2f_representatives.fas
+4.chimera_checking.sh	in: _1f_representatives.fas		out: in: _1f_representatives.uchime		
+>>>clustering_swarm_complete.sh	to run using slurm job.
 
 ###6_taxa_assign###
 FOR NCBI LOCAL ALIGNMENT STRATEGIES
-13 ./EntrezDirect.sh -h		in: my query  out: my_search_esearch.fasta
+1 ./EntrezDirect.sh -h		in: my query  out: my_search_esearch.fasta
 ##################################################
 Download reference sequences in fasta format.
 Entrez Direct NCBI command line tools
@@ -99,7 +104,7 @@ Usage: ./EntrezDirect.sh [-d nuccore|protein] [-q gene] [-t taxa] [-o output]
 -h     Print this Help.
 ##################################################
 
-14 ./format_NCBI2lineages_auto.sh -h 	in: references downloaded  out: my_refs.uniq.fasta
+2 ./format_NCBI2lineages_auto.sh -h 	in: references downloaded  out: my_refs.uniq.fasta
 ##################################################
 Format and include taxonomic lineage in reference
 sequences headers downloaded from NCBI taxonomy.
@@ -113,28 +118,27 @@ Usage: ./format_NCBI2lineages_auto.sh [-r fasta] [-p output_prefix]
 -h     Print this Help.
 ##################################################
 
-15. BLAST.sh --> script working, but not final --> in: OTUs from clustering step    out: Best hit BLAST table
+3 BLAST.sh --> script working, but not final --> in: OTUs from clustering step    out: Best hit BLAST table
 in: _2f_representatives.fas/my_refs.uniq.fasta		out: your_project_local_blast.tab
 
-16 perl Blast_results_format.pl --> format BLAST output to work in OTU table and stampadapt.sh
+4 perl Blast_results_format.pl --> format BLAST output to work in OTU table and stampadapt.sh
 in: your_project_local_blast.tab		out: Blast_formatted2OTUtable.tab
 
 ###7_build_OTU_table###
-17. Build OTU table:
 vi build_OTU_table.sh
 in: global derep fasta, clustering outputs, Blast_formatted2OTUtable.tab and quality file
 out: the complete version of the OTU table.
 
 ###8_filter_table_phyloseq###
-18. filter_OTU_table.sh   in: OTU table   out: OTU table formatted to load in Phyloseq
-19. perl taxa_assignment_table.pl Blast_formatted2OTUtable.tab  out: final_OTU_tax_assignments.txt to load in Phyloseq
-20. script for loading your tables in phyloseq and some first steps: metapipe_phyloseq.R
+1. filter_OTU_table.sh   in: OTU table   out: OTU table formatted to load in Phyloseq
+2. perl taxa_assignment_table.pl Blast_formatted2OTUtable.tab  out: final_OTU_tax_assignments.txt to load in Phyloseq
+3. script for loading your tables in phyloseq and some first steps: metapipe_phyloseq.R
 
 Second taxa assignment option:
 ###6_taxa_assign###
-primers_cut.sh 
-Download your references from BOLD, cut it with your primers and format header with taxonomic lineage
- ./stampadapt.sh -h
+1 primers_cut.sh : Download your references from BOLD, cut it with your primers and format header with taxonomic lineage
+
+2 ./stampadapt.sh -h
 ##################################################
 Runs the adapted version of STAMPA LCA taxa assignment
 Usage: ./stampadapt.sh [-q query.fasta] [-d references.fasta] [-o output] [-p pwd]
@@ -143,6 +147,5 @@ Usage: ./stampadapt.sh [-q query.fasta] [-d references.fasta] [-o output] [-p pw
 -o     output name for the final assignments file.
 -h     print this help
 ##################################################
-stampaplot.sh 
-Just one example of how to plot STAMPA results, still in progress
+3 stampaplot.sh : Just one example of how to plot STAMPA results, still in progress
 
