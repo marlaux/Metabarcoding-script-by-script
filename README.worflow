@@ -79,7 +79,7 @@ script by script:
 10.clustering_swarm.sh	in: concatenated globally dereplicated multifasta	out: representatives/struct/swarms/uchime
 11.sort_representatives.sh	in: _1f_representatives.fas		out: _2f_representatives.fas
 12.chimera_checking.sh	in: _1f_representatives.fas		out: in: _1f_representatives.uchime		
-13.clustering_swarm_complete.sh	to run using slurm job.
+clustering_swarm_complete.sh	to run using slurm job.
 
 FOR NCBI LOCAL ALIGNMENT STRATEGIES
 13 ./EntrezDirect.sh -h		in: my query  out: my_search_esearch.fasta
@@ -109,10 +109,16 @@ Usage: ./format_NCBI2lineages_auto.sh [-r fasta] [-p output_prefix]
 -h     Print this Help.
 ##################################################
 
-15. BLAST.sh --> script working, but not final
+15. BLAST.sh --> script working, but not final --> in: OTUs from clustering step    out: Best hit BLAST table
 in: _2f_representatives.fas/my_refs.uniq.fasta		out: your_project_local_blast.tab
 
 16 perl Blast_results_format.pl --> format BLAST output to work in OTU table and stampadapt.sh
-in: your_project_local_blast.tab		out: Blast_results_formatted2OTUtable.tab
+in: your_project_local_blast.tab		out: Blast_formatted2OTUtable.tab
 
-17. .. in progress
+17. Build OTU table:
+vi build_OTU_table.sh
+in: global derep fasta, clustering outputs, Blast_formatted2OTUtable.tab and quality file
+out: the complete version of the OTU table.
+
+18. filter_OTU_table.sh   in: OTU table   out: OTU table formatted to load in Phyloseq
+19. perl taxa_assignment_table.pl Blast_formatted2OTUtable.tab  out: final_OTU_tax_assignments.txt to load in Phyloseq
