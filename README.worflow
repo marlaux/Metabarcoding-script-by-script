@@ -130,3 +130,19 @@ out: the complete version of the OTU table.
 19. perl taxa_assignment_table.pl Blast_formatted2OTUtable.tab  out: final_OTU_tax_assignments.txt to load in Phyloseq
 20. script for loading your tables in phyloseq and some first steps: metapipe_phyloseq.R
 
+Second taxa assignment option:
+###6_taxa_assign###
+primers_cut.sh 
+Download your references from BOLD, cut it with your primers and format header with taxonomic lineage
+ ./stampadapt.sh -h
+##################################################
+Runs the adapted version of STAMPA LCA taxa assignment
+Usage: ./stampadapt.sh [-q query.fasta] [-d references.fasta] [-o output] [-p pwd]
+-q     OTUs fasta file, the output from clustering step
+-d     references sequences formatted
+-o     output name for the final assignments file.
+-h     print this help
+##################################################
+stampaplot.sh 
+Just one example of how to plot STAMPA results, still in progress
+
