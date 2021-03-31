@@ -1,19 +1,30 @@
-Here you also can choose if you want to run the wrapped clustering script or each step at a time.
-To run the clustering_step_swarm.sh, you will need the following file:
->Global quality file
-cp /../3_read_cleaning/my_samples_quality_file.qual .
+./clustering_swarm_wrap.sh -h
+##################################################
+Global dereplication, clustering using SWARM, formatting and chimera searching wrapped script.
 
-Then edit the script
-vi clustering_step_swarm.sh
-line 6: give a name to your global dereplicated fasta file, which is the input for clustering. The same as 4_dereplicate step.
-line 7: length in bp according your expected amplicons
-line 16: if you kept the directories names, just edit your username
+Usage: ./clustering_swarm_wrap.sh [-l length] [-o output] [-p pwd]
+-l     expected amplicon lenght
+-o     output name 'my_project_marker'
+-p     complete path to dereplicated by samples directory (3_read_cleaning step, derep_sample)
+-h     print this help
 
-The first part does the global dereplication. If you already have it, from 4_dereplicate step, just comment all lines from loading VSEARCH to loading SWARM.
+##################################################
 
-The second part is the clustering itself, please take a look in SWARM arguments and documentation: https://github.com/torognes/swarm
+The clustering_swarm_complete.sh runs as a slurm job, so you need to open, edit save and run through run_cluster_swarm.slurm
 
-The third part is the sorting and the last part is the chimera checking.
+Edit the script:
+vi clustering_swarm_complete.sh
+GLOBAL_DP="my_project_marker.fas" !!!keep the .fas suffix!!!
+	>>>This global dereplicated multifasta is the input for clustering.
+LENGTH= int >>> expected amplicons length in bp.
+line 13: your dereplicated individual samples from 3_read_cleaning step.
+
+The first part does the global dereplication from the dereplicated by samples step. 
+The second part is the clustering itself, please take a look in SWARM arguments and documentation: https://github.com/torognes/swarm. 
+The third part is the sorting by size.
+The forth part is the chimera search.
+The last part edits the abundance annotation from ';size=X;' to '_X'
+
 Each one of these four steps have your own script, you can run one by one:
 global_dereplication.sh >> my_samples_global_derep.fas
 clustering_swarm.sh >>  my_samples_global_derep.struct
