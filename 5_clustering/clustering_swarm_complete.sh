@@ -10,8 +10,7 @@ module load StdEnv
 module load VSEARCH/2.13.4-iccifort-2019.1.144-GCC-8.2.0-2.31.1
 
 # Global dereplication
-#cat /cluster/projects/nn9623k/metapipe/3_read_cleaning/dereplicated/3_read_cleaning/dereplicated/*.fasta > "${TMP_FASTA}"
-cat /cluster/work/users/marlaux/GITHUB/METAPIPE/3_read_cleaning/dereplicated_bash/*_dp.fasta > "${TMP_FASTA}"
+cat /cluster/projects/nn9623k/metapipe/3_read_cleaning/derep_samples/*.fasta > "${TMP_FASTA}"
 
 # Global dereplication
 vsearch --derep_fulllength "${TMP_FASTA}" \
