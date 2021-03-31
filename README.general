@@ -5,6 +5,7 @@ You can copy the entire 'metapipe' folder to your work directory using cp -r
 	cp -r /cluster/projects/nn9623k/metapipe .
 For each step, take a time to study what is been done, along with the tools and respective options. Your project question may be easily answered using an optional argument, remember that!
 Besides reading lots and lots of cientific papers, do not forget that Google can help you a lot! Pages like https://www.biostars.org/ and http://seqanswers.com/ can solve your errors and doubts most of the times.
+Detailed description about the workflow, read README.workflow
 
 GENERAL WORKLOW
 For each step:
