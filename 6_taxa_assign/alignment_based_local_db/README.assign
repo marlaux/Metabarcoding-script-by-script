@@ -12,12 +12,14 @@ https://www.ncbi.nlm.nih.gov/books/NBK279684/ --> take a special look in the com
 >>>PREFIX_DB="Xyleborus"
 It is a reasonable way to not mix your results or forget which input you ran with that taxa. Just a suggestion.
 
-Uncomment the Blast Strategy you want. The first is the remote database option, which run agains the whole NNBI NT database located in the following SAGA directory:
-/cluster/shared/databases/blast/25-10-2019/
-++++This option do not need references formatting.++++
+Uncomment the Blast Strategy you want. 
+>>>The first is the local BLAST command line. You do not need to change anything, because the variables were all set at the top of the script. 
+The Blast.sh script will first run makeblastdb, which parses the formatted reference fasta file you just created in format_NCBI_references directory, 
+namely my_reference_lineage_formated.fasta.uniq.fasta
 
-At local BLAST command line, you do not need to change anything, because the variables were all set at the top of the script. 
->>>First we run makeblastdb, which parses the formatted reference fasta file you justcreated in format_NCBI_references directory, namely my_reference_lineage_formated.fasta.uniq.fasta
+>>>The remote database option align the sequences against the whole NCBI NT database, which is located in the following SAGA directory:
+/cluster/shared/databases/blast/25-10-2019/
+This option do not need references formatting
 
 After running your BLAST search and getting your output as expected:
 6631f_96     99.762  Eukaryota|Arthropoda|Insecta|Coleoptera|Curculionidae|Xyleborus|Xyleborus+affinis gb|KP941297.1|  N/A
