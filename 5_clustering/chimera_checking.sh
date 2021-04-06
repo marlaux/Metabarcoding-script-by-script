@@ -12,3 +12,5 @@ vsearch    \
         --uchime_denovo "${REPRESENTATIVES}" \
         --uchimeout "${UCHIME}"
 
+FINAL=${REPRESENTATIVES/_1f_representatives.fas/_2f_representatives.fas}
+sed -e '/^>/ s/;size=/_/' -e '/^>/ s/;$//' "${REPRESENTATIVES}" > "${FINAL}"
