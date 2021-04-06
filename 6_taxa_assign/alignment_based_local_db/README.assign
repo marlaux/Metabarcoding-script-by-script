@@ -1,8 +1,9 @@
 LOCAL ALIGNMENT BASED STRATEGY FOR FAST TAXONOMIC ASSIGNMENT AND AMPLICON TARGET SCREENING
 
 1.edit the BLAST.sh script:
->>>FASTA="my_training_set_global_dp_2f_representatives.fas" --> the output from the following clustering scripts: clustering_swarm_complete.sh, clustering_swarm_wrap.sh
-and chimera_checking.sh
+>>>FASTA="my_training_set_global_dp_2f_representatives.fas" --> the output from the following clustering scripts (5_clustering step): 
+clustering_swarm_complete.sh (if you ran on SAGA), clustering_swarm_wrap.sh (if you ran using srun) or chimera_checking.sh (if you ran script by script using srun)
+
 >>>LOCAL_DB="Xyleborus_lineage_formated.fasta.uniq.fasta" --> this is the format_NCBI2lineages.sh output, remember to rename using 'sed' (see README.format)
 
 >>>Blast parameters, change as you'd like. Take a look for help here:
