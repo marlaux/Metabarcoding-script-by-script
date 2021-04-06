@@ -2,15 +2,18 @@
 +++++++TAXONOMIC ASSIGNMENT STEP+++++++
 #######################################
 
+This step is in construction. I advise you to follow the best-hit / Phyloseq strategy for now, the LCA and multiple alignment will be added ASAP.
+
 The strategy chosen and methods adopted vary between researchers and teams, accordingly to the projects goals.
-The clustering step is present in most of the studies, and it is the way through the METAPIPE pipeline, but the taxonomic assignment can also be done for individual dereplicated samples from step 4, for example.
+The clustering step is present in most of the studies, in which the representative OTUs are annotated, but the taxonomic assignment can also be done for individual 
+dereplicated samples from step 4, for example, which can be directly loaded in MEGAN tool.
 
 The taxa assignment is most frequently performed using:
-
 >>Alignment-based technique: direct sequence similarity comparison between query and reference sequences based on local alignments --> BLAST, NCBI, fast
 	>Best hit --> most frequently used
 	>LCA (Last Common Ancestor): phylogenetic placement according to local alignments --> MEGAN
 
+On the other hand, intraspecific analysis and variants usually are explored using:
 >>Sequence composition-based techniques: similarity through multiple alignment (HMM models) --> QIIME, computationally expensive
 
 >>Global pairwise sequence comparison: filtering based on k-mers, followed by optimal alignment of the query with the most promising reference candidates --> VSEARCH, computationally expensive but the full dynamic programming compensates the extra cost
