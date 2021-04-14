@@ -4,23 +4,31 @@ LOCAL ALIGNMENT BASED STRATEGY FOR FAST TAXONOMIC ASSIGNMENT AND AMPLICON TARGET
 >>>FASTA="my_training_set_global_dp_2f_representatives.fas" --> the output from the following clustering scripts (5_clustering step): 
 clustering_swarm_complete.sh (if you ran on SAGA), clustering_swarm_wrap.sh (if you ran using srun) or chimera_checking.sh (if you ran script by script using srun)
 
->>>LOCAL_DB="Xyleborus_lineage_formated.fasta.uniq.fasta" --> this is the format_NCBI2lineages.sh output, remember to rename using 'sed' (see README.format)
+>>>LOCAL_DB="Xyleborus_lineage_formated.fasta.uniq.fasta" --> this is the format_NCBI2lineages.sh output
 
 >>>Blast parameters, change as you'd like. Take a look for help here:
-https://www.ncbi.nlm.nih.gov/books/NBK279684/ --> take a special look in the command-line application: outfmt
+https://www.ncbi.nlm.nih.gov/books/NBK279684/ --> take a special look in the 'outfmt' parameter
 
 >>>PREFIX_IN="my_training_set"
->>>PREFIX_DB="Xyleborus"
+>>>PREFIX_DB="my_genus"
 It is a reasonable way to not mix your results or forget which input you ran with that taxa. Just a suggestion.
 
-Uncomment the Blast Strategy you want. 
->>>The first is the local BLAST command line. You do not need to change anything, because the variables were all set at the top of the script. 
+Uncomment the databases according to the BLAST Strategy you want: 
+>>>Do not edit the BLAST command, only the variables at the top of the script. 
+The local BLAST is faster and more specific, but you should download and format your references in the format_references session.
+1.download and format the references in the format_NCBI_references session
+2.edit the BLAST.sh script with your parameters and input files
+3.uncomment the LOCAL_DB variable and comment the NCBI_DB (do the opposite for the NT search)
+3.uncomment the makeblastdb command
 The Blast.sh script will first run makeblastdb, which parses the formatted reference fasta file you just created in format_NCBI_references directory, 
-namely my_reference_lineage_formated.fasta.uniq.fasta
+my_reference_lineage_formated.fasta.uniq.fasta
 
->>>The remote database option align the sequences against the whole NCBI NT database, which is located in the following SAGA directory:
-/cluster/shared/databases/blast/25-10-2019/
-This option do not need references formatting
+>>>The NCBI_DB option align the input sequences against the whole NCBI NT database, which is located in the following SAGA directory:
+/cluster/shared/databases/blast/
+in this directory, the 'latest' is the most updated database.
+This option do not need references formatting, but it takes much more time, some times weeks, depending on your samples size and diversity. 
+Aligning a dataset amplified from one or some markers against the whole NT database is a waste of time, because you can easily download the references you need using 
+the EntrezDirect.sh script from format_NCBI_references session
 
 After running your BLAST search and getting your output as expected:
 6631f_96     99.762  Eukaryota|Arthropoda|Insecta|Coleoptera|Curculionidae|Xyleborus|Xyleborus+affinis gb|KP941297.1|  N/A
