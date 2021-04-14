@@ -14,7 +14,7 @@ The format_NCBI2lineages_auto.sh script does it for us.
 Usage:
 ./format_NCBI2lineages_auto.sh -r references_downloaded.fasta -p prefix2output
 For more details use help flag:
-The format_NCBI2lineages_auto.sh -h
+./format_NCBI2lineages_auto.sh -h
 
 be sure that you have the following files in your directory:
 references_downloaded.fasta -> from browser or EntrezDirect.sh
