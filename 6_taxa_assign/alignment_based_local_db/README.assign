@@ -19,7 +19,6 @@ Usage: ./blasting_options.sh [-f fasta] [-d database] [-s float] [-c float] [-t 
 
 if you prefer to edit the script:
 
-1.edit the BLAST.sh script:
 >>>FASTA="my_training_set_global_dp_2f_representatives.fas" --> the output from the following clustering scripts (5_clustering step): 
 clustering_swarm_complete.sh (if you ran on SAGA), clustering_swarm_wrap.sh (if you ran using srun) or chimera_checking.sh (if you ran script by script using srun)
 >>>NCBI_DB="/cluster/shared/databases/blast/latest/nt"
