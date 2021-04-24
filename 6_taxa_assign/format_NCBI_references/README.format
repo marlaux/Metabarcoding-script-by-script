@@ -4,6 +4,7 @@ Fow long searches and large reference datasets, use Entrez Direct:
 
 vi EntrezDirect2slurm.sh
 choose from the available queries, then edit the one that matches your references. Leave the other queries commented.
+Entrez user manual: https://www.ncbi.nlm.nih.gov/books/NBK179288/
 
 FORMATTING REFERENCES:
 
@@ -16,10 +17,30 @@ But what we need is:
 AACTTTATATTTTATCTTTGGGGCTTGAGCAGGAATAGTGGGAACTTCCTTAAGTGTATT
 
 The format_NCBI2lineages_auto.sh script does it for us.
-Usage:
-./format_NCBI2lineages_auto.sh -r references_downloaded.fasta -p prefix2output
-For more details use help flag:
+
 ./format_NCBI2lineages_auto.sh -h
+##################################################
+
+Format and include taxonomic lineage in reference
+sequences headers downloaded from NCBI taxonomy.
+This script will generate a multifasta file which
+will be the input for makeblastdb to build your
+local database to run in BLAST.
+
+Usage: ./format_NCBI2lineages_auto.sh [-r fasta] [-p output_prefix]
+-r     references_downloaded_fromNCBI.fasta
+-p     prefix to output filenames
+-h     Print this Help.
+This script needs the two embedded Perl scripts to run:
+format_NCBI2lineages_dups.pl and format_NCBI2lineages_edit.pl DO NOT EDIT THEM.
+##################################################
+
+If you prefer to edit the script, instead of using the flagged option, then edit:
+format_NCBI2lineages_1.sh
+but do not edit the embedded Perl scripts:
+format_NCBI2lineages_2.pl
+format_NCBI2lineages_3.pl
+
 
 Download and install TaxonKit:
 wget https://github.com/shenwei356/taxonkit/releases/download/v0.8.0/taxonkit_linux_amd64.tar.gz
