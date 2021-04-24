@@ -17,6 +17,9 @@ usage () {
 	echo "-r     references_downloaded_fromNCBI.fasta"
 	echo "-p     prefix to output filenames"
 	echo "-h     Print this Help." 
+	echo "This script needs the two embedded Perl scripts to run:"
+        echo "format_NCBI2lineages_dups.pl and format_NCBI2lineages_edit.pl"
+        echo "DO NOT EDIT THEM."
 	echo " "
 	echo "##################################################"	
 		1>&2; exit 1;
