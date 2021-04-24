@@ -17,6 +17,12 @@ Usage: ./blasting_options.sh [-f fasta] [-d database] [-s float] [-c float] [-t 
 
 ##################################################
 
+Examples:
+./blasting_options.sh -f my_query.fasta -d NT -s 0.97 -c 0.6 -t 1 -o my_query_NT
+The output will be: my_query_NT_local_blast.tab
+./blasting_options.sh -f my_query.fasta -d Arthropoda_COI.uniq.fasta -s 0.97 -c 0.6 -t 1 -o Arthropoda_COI
+The output will be: Arthropoda_COI_local_blast.tab
+
 if you prefer to edit the script:
 
 >>>FASTA="my_training_set_global_dp_2f_representatives.fas" --> the output from the following clustering scripts (5_clustering step): 
@@ -25,7 +31,6 @@ clustering_swarm_complete.sh (if you ran on SAGA), clustering_swarm_wrap.sh (if 
 >>>LOCAL_DB="Xyleborus_lineage_formated.fasta.uniq.fasta" --> this is the format_NCBI2lineages.sh output
   !!!!!Blast parameters, change as you'd like. Take a look for help here:
        https://www.ncbi.nlm.nih.gov/books/NBK279684/ --> take a special look in the 'outfmt' parameter
-
 >>>SIM="0.97" --> minimum similarity between query and subject, float 0-1
 >>>COV="0.6" --> minimum subject coverage reached by the query alignment, float 0-1
 >>>HITS_PER_SUBJECT="1" --> 1 for 'best hit' or 10 for 'LCA'
