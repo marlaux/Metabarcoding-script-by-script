@@ -15,8 +15,8 @@ set -o errexit
 set -o nounset
 
 
-#./format_NCBI2lineages_auto.sh -r Arthropoda_COI_esearch.fasta -p Arthropoda_COI
-./EntrezDirect2slurm.sh
+#./blasting_options.sh -f my_query.fasta -d NT -s 0.97 -c 0.6 -t 1 -o my_query_NT
+./BLAST.sh
 
 
 exit 0
