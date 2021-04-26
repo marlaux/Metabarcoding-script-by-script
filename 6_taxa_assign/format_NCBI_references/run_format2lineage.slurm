@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --account=nn9623k
+#SBATCH --account=nn9813k
 #SBATCH --job-name=Entrez/format
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
