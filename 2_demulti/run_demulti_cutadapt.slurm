@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=demulti
 #SBATCH --time=72:00:00
-#SBATCH --account=nn9623k
+#SBATCH --account=nn9813k
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks-per-node=1
