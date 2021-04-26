@@ -2,7 +2,7 @@
 
 # Script example for a normal MPI job on Saga #
 
-#SBATCH --account=nn9623k
+#SBATCH --account=nn9813k
 #SBATCH --job-name=Pear
 #SBATCH --ntasks=1 ## Number of tasks (aka processes) to start: Pure mpi, one cpu per task
 #SBATCH --cpus-per-task=8
