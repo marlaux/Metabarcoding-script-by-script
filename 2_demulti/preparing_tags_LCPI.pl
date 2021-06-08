@@ -111,6 +111,10 @@ my @new_file4=();
 }
 sub ion
 {
+print "#########################################################################\n";
+print "ATTENTION: The default behaviour is both tags anchored, meaning that\n";
+print "only amplicons presenting both F and R tags will be demultiplexed\n";
+print "#########################################################################\n";
 open (ALT1, '>>Barcodes_alt1.fa');
 open (ALT2, '>>Barcodes_alt2.fa');
 open (ALT3, '>>Barcodes_alt3.fa');
@@ -132,10 +136,10 @@ my @tags_alt_4=();
                         my $RCtagR=reverse $tag_R;
                         $RCtagR =~ tr/ATGCatgc/TACGtacg/;
                         $RCtagR =~ s/[^\p{PosixAlnum},]//g;
-                        push (@tags_alt_1, (">$sample\n$tag_F...$RCtagR\n"));
-			push (@tags_alt_2, (">$sample\n$RCtagF...$tag_R\n"));
-			push (@tags_alt_3, (">$sample\n$tag_R...$RCtagF\n"));
-			push (@tags_alt_4, (">$sample\n$RCtagR...$tag_F\n"));
+                        push (@tags_alt_1, (">^$sample\n$tag_F...$RCtagR\$\n"));
+			push (@tags_alt_2, (">^$sample\n$RCtagF...$tag_R\$\n"));
+			push (@tags_alt_3, (">^$sample\n$tag_R...$RCtagF\$\n"));
+			push (@tags_alt_4, (">^$sample\n$RCtagR...$tag_F\$\n"));
                         }
         print ALT1 @tags_alt_1;
 	print ALT2 @tags_alt_2;
