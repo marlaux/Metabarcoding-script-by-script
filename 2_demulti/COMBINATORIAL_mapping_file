@@ -1,0 +1,135 @@
+1. combinatorial mapping file:
+from the default:
+AI2c_I	CCTAAACTACGG	CCATCACATAGG
+AI3e_II	CCTAAACTACGG	ACTTTAAGGGTG
+AIP2a_B	TGCAGATCCAAC	CCATCACATAGG
+AIP3c_C	TGCAGATCCAAC	ACTTTAAGGGTG
+AIP5d_A	TGCAGATCCAAC	ATGTCCGACCAA
+
+change to index - index -> sample:
+F1	CCTAAACTACGG	F3	CCATCACATAGG	AI2c_I
+F1	CCTAAACTACGG	F5	ACTTTAAGGGTG	AI3e_II
+F2	TGCAGATCCAAC	F3	CCATCACATAGG	AIP2a_B
+F2	TGCAGATCCAAC	F5	ACTTTAAGGGTG	AIP3c_C
+F2	TGCAGATCCAAC	F8	ATGTCCGACCAA	AIP5d_A
+
+the barcode (or tags) fasta files will be:
+Barcodes_F:
+F1      CCTAAACTACGG
+F2      TGCAGATCCAAC
+F3      CCATCACATAGG
+F4      GTGGTATGGGAG
+F5      ACTTTAAGGGTG
+F6      GAGCAACATCCT
+
+Barcodes_R:
+F3      CCATCACATAGG
+F5      ACTTTAAGGGTG
+F8      ATGTCCGACCAA
+F1      CCTAAACTACGG
+F2      TGCAGATCCAAC
+F4      GTGGTATGGGAG
+
+Then format to fasta:
+awk '{print ">"$1"\n"$2}' Barcodes_F.txt > Barcodes_F.fa
+awk '{print ">"$1"\n"$2}' Barcodes_R.txt > Barcodes_R.fa
+
+Now you have:
+Barcodes_F.fa
+>F1
+CCTAAACTACGG
+>F2
+TGCAGATCCAAC
+>F3
+CCATCACATAGG
+>F4
+GTGGTATGGGAG
+>F5
+ACTTTAAGGGTG
+
+Barcodes_R.fa
+>F3
+CCATCACATAGG
+>F5
+ACTTTAAGGGTG
+>F8
+ATGTCCGACCAA
+>F1
+CCTAAACTACGG
+>F2
+TGCAGATCCAAC
+
+Now running the combinatorial demultiplexing:
+INPUT_F="Lib1_R1_subsampled.fastq"
+INPUT_R="Lib1_R2_subsampled.fastq"
+TAG_F="Barcodes_F.fa"
+TAG_R="Barcodes_R.fa"
+
+cutadapt \
+    -e 0.1 --no-indels \
+    -g file:${TAG_F} \
+    -G file:${TAG_R} \
+    -o {name1}-{name2}_1.fq -p {name1}-{name2}_2.fq \
+    --action=lowercase  \
+    --discard-untrimmed \
+    ${INPUT_F} ${INPUT_R}
+
+
+mkdir demulti_comb
+mv *.fq demulti_comb
+
+!!!!!! --action=lowercase: important to check if the tag pairs by sample are right
+!!!!!! --discard-untrimmed: discard the unknown
+
+Now the output is like this:
+cd demulti_comb
+ls
+F12-F13_1.fq
+F12-F13_2.fq
+F12-F15_1.fq
+...
+
+In order to rename them, you must build a sample_names.txt file like this:
+head sample_names.txt
+F11-F8  AI4b_III
+F12-F1  AI4b_IV
+F12-F   AI4c_I
+F12-F4  AI4c_II
+F12-F5  AI4c_III
+F12-F6  AI4c_IV
+
+then run the following:
+awk '{printf("mv %s_1.fq %s_1.fq\nmv %s_2.fq %s_2.fq\n", $1, $2, $1, $2)}' < sample_names.txt
+awk '{printf("mv %s_1.fq %s_1.fq\nmv %s_2.fq %s_2.fq\n", $1, $2, $1, $2)}' < sample_names.txt | sh
+
+then check if the tag by sample is alright:
+head AIP5c_D_1.fq
+@M01334:388:000000000-JBK78:1:2114:12966:24194 1:N:0:CTCTCGTC+TATAACCT
+gggacttctGCCCCTGATATGGCTTTCCCCACGA..........GGAATAACCATGGACCGCCTTCCGTTATTTGTC
+head AIP5c_D_2.fq
+@M01334:388:000000000-JBK78:1:2114:12966:24194 2:N:0:CTCTCGTC+TATAACCT
+aggagtaaagcTCTGGATGGCCGAAAAATCAAAA.........GGAACTACAGTCGAGGGGTAAGGAAAAAAATGCC
+
+gggacttct -> F20	CCAGGGACTTCT
+aggagtaaagc -> F12	GAGGAGTAAAGC
+grep "F20-F12" sample_names.txt
+F20-F12 AIP5c_D
+
+It's fine!!
+
+Then do the same check some times more, and then with the "wrong pairs", to see what happenend:
+head F14-F16_1.fq
+@M01334:388:000000000-JBK78:1:1109:10968:15727 1:N:0:CTCTCGTC+TATAACCT
+ggaCCTATGCAGGACTGGGTCACCGCCACCGACATTAAG..............AGAATTCTGCGAAATGCATTAAAAAAAGAG
+head F14-F16_2.fq
+tgcaGGTCCGACACGGCGTACGCGTACGAGTCCCGTGCC.............TAGCAGTGTGTATCGCACTGCAATAATGGATG
+
+head F13-F10_1.fq
+@M01334:388:000000000-JBK78:1:1110:12389:17503 1:N:0:CTCTCGTC+TATAACCT
+gttacgtggttgGCACCAGATATAGCATTCCC................ATGGATCGCCTCCCATTATTTT --> F13
+head F13-F10_2.fq
+@M01334:388:000000000-JBK78:1:1110:12389:17503 2:N:0:CTCTCGTC+TATAACCT
+ccatCACTAGGTCGGGGTGGCCAAAGAACCAAA..........CTCCGGCAAGGTGAAGTGAAAAAATTCC
+
+
+
