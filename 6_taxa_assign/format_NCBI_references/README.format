@@ -52,8 +52,8 @@ be sure that you have the following files in your directory:
 references_downloaded.fasta -> from browser or EntrezDirect.sh
 edit_lineage.pl || edit_lineage_auto.pl
 remove_dups.pl || remove_dups_auto.pl
-nucl_gb.accession2taxid.gz -> wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz
-taxdb.btd and taxdb.bti: ftp://ftp.ncbi.nlm.nih.gov/blast/db/taxdb.tar.gz
+nucl_gb.accession2taxid.gz -> wget https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz
+taxdb.btd and taxdb.bti: https://ftp.ncbi.nlm.nih.gov/blast/db/
 tar -xvf taxdb.tar.gz
 
 
