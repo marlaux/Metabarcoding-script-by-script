@@ -60,6 +60,9 @@ This script needs the two embedded Perl scripts to run:
 format_NCBI2lineages_dups.pl and format_NCBI2lineages_edit.pl DO NOT EDIT THEM.
 ##################################################
 
+Example:
+./format_NCBI2lineages_auto.sh -r Streptophyta_ITS_NCBI.fasta -p ITS_plants_NCBI
+
 If you prefer to edit the script, instead of using the flagged option, then edit:
 format_NCBI2lineages_1.sh
 but do not edit the embedded Perl scripts:
