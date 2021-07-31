@@ -1,0 +1,28 @@
+ATTENTION
+I will improve this document soon
+
+#esearch -db nucleotide -query "cyanobacteria [ORGN]" | efilter -query "Gene [FKEY]" | efetch -format fasta > cyano_genes.fas
+
+#esearch -db nucleotide -query "cyanobacteria [ORGN] NOT whole genome shotgun sequence [TI]" | efilter -query "Gene[FKEY]" | efetch -format tabular | xtract -insd gene product > teste_tab.tab
+#efilter -query "Gene [FKEY]" -type coding -source refseq
+
+#esearch -db protein -query "amyloid* [PROT]" |
+#  elink -target pubmed -label prot_cit |
+#  esearch -db gene -query "apo* [GENE]" |
+#  elink -target pubmed -label gene_cit |
+#  esearch -query "(#prot_cit) AND (#gene_cit)" |
+#  efetch -format docsum |
+#  xtract -pattern DocumentSummary -element Id Title > teste_comb.txt
+
+#esearch -db pubmed -query "Embryophyta [ORGN] AND (ITS1 [TI] OR ITS2 [TI] OR internal transcribed spacer [TI])" |
+#xtract -insd CDS gene sub_sequence > teste_pep2.tab
+
+#esearch -db nuccore -query "txid1301283 [ORGN] OR txid1161 [ORGN]" |   \
+#  efilter -query "cds [FKEY]" |        \
+#  efetch -format fasta > Nosto_Oscilla_gene.fasta
+
+esearch -db protein -query "txid1301283 [ORGN] OR txid1161 [ORGN] NOT (MULTISPECIES [TI])" |    \
+  efilter -source refseq | \
+  efetch -format fasta > Nosto_Oscilla_protein.fasta
+  
+for i in `cat taxids.list2`; do echo $i; esearch -db nuccore -query "$i [ORGN] AND 18S [TI]" | efetch -format fasta >> Bdelloidea_18S; done
