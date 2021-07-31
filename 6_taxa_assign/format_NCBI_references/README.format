@@ -2,34 +2,32 @@ DOWNLOADING REFERENCES:
 Download your references directly from NCBI taxonomy page or using the Entrez efetch system. 
 Fow long searches and large reference datasets, use Entrez Direct:
 
-*nor working" --> within EntrezDirect2slurm.sh you have some queries examples, but SAGA is making difficult to connect to NCBI database through server.
+*not working using queue system" --> within EntrezDirectExamples.txt you have some queries examples, but SAGA is making difficult to connect to NCBI database through server.
 choose from the available queries, then edit the one that matches your references. Leave the other queries commented.
 Entrez user manual: https://www.ncbi.nlm.nih.gov/books/NBK179288/
 
 using srun:
 srun --ntasks=1 --mem-per-cpu=8G --time=01:55:00 --qos=devel --account=nn9813k --pty bash -i
 
-./EntrezDirect.sh -h
+./EntrezDirect2.sh -h
 ##################################################
 
 Download reference sequences in fasta format.
 Entrez Direct NCBI command line tools
 
-Usage: ./EntrezDirect.sh [-d nuccore|protein] [-q gene] [-t taxa] [-o output]
+Usage: ./EntrezDirect2.sh [-d nuccore|protein] [-t taxaid] [-q query] [-o output]
 
 -d     NCBI database: 'nuccore' (nucleotide) or 'protein'
--q     Entrez search terms: 'COI [gene]' or 'Internal transcribed spacer'
--t     Expected taxonomic target: 'Arthropoda [ORGN]' or 'plants [ORGN]'
+-t     Taxa ID in the format txid85472
 -o     Name for the local database.
+-q     Expected genomic target
 -h     Print this Help.
 
 ##################################################
 
 Example:
-esearch -db nuccore -query "txid35493 [ORGN] AND (Internal transcribed space [TI] OR ITS1 [TI] OR ITS2 [TI])" | efetch -format fasta > Streptophyta_ITS_NCBI.fasta
-###seems it takes a long time, usually the 2 hour allowed for srun is not enough, so you can just copy:
-txid35493 [ORGN] AND (Internal transcribed space [TI] OR ITS1 [TI] OR ITS2 [TI])
-in the search box from NCBI home page, choosing nucleotide, and then download it all in fasta format.
+./EntrezDirect.sh -d nuccore -t txid35493 -q "(Internal transcribed space [TI] OR ITS1 [TI] OR ITS2 [TI])" -o teste_entrez
+
 
 FORMATTING REFERENCES:
 
