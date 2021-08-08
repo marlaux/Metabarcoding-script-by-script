@@ -1,3 +1,4 @@
+If you are a beginner in this area, please take a look in the PDF file "demultiplex_Illumina_merged_pairs.pdf" available above
 This script format your tags according Cutadapt method
 to run just type: 
 perl preparing_tags_LCPI.pl
@@ -8,9 +9,15 @@ the signs $ and ^ are the anchor signs, you can carefully edit the script removi
 push (@new_file1, (">$sample\n^$tag_F...$tag_R\$\n"));
 push (@new_file2, (">$sample\n^$RCtagR...$RCtagF\$\n"));
 push (@new_file3, (">$sample\n^$tag_F...$RCtagR\$\n"));
-					just remove the dolar sign:
-					$tag_R\n"));
-					$RCtagF\n"));
-					$RCtagR\n"));
-					but don't forget the end of line \n
-						or the double quote "
+					just remove the '^' sign in the 3' end (first tag from mapping file):
+					">$sample\n$tag_F...$tag_R\$\n"
+					">$sample\n$RCtagR...$RCtagF\$\n"
+					">$sample\n$tag_F...$RCtagR\$\n"
+Likewise, leave only 3' end anchored:
+					just remove the '$' sign in the 5' end (second tag from mapping file):
+					">$sample\n^$tag_F...$tag_R\n"
+					">$sample\n^$RCtagR...$RCtagF\n"
+					">$sample\n^$tag_F...$RCtagR\n"
+
+I strongly recommend to keep BOTH anchored for Ion Torrent dual index strategy!!!
+Similarly, I recommend to run BOTH anchored for Illumina merged paired ends design as well, but since in this 
