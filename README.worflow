@@ -3,8 +3,8 @@
 The main purpose of this repository is to help structure and organize the Metabarcoding pipeline, with special care to build scripts as user friendly as possible. 
 
 The scripts are presented as a chain of commands in step by step mode, along with wrapped scripts formatted to run in job queue or interactively using srun (scripts with flags).   
-You can choose to run command by command, using independent little scripts, or using the wrapped scripts (named with "_wrap.sh"), or using arguments in command line, allowing the
-user to view a help page and select the inputs dinamically (named with "_auto.sh").
+You can choose to run command by command, using independent little scripts, or using the wrapped scripts (named with "_wrap.sh"), or using the flag scripts, with arguments in 
+command line, allowing the user to view a help page and select the inputs dinamically (named with "_auto.sh").
 
 You can allocate resources to work in command line using srun:
 srun --ntasks=1 --mem-per-cpu=8G --time=02:00:00 --qos=devel --account=nn9813k --pty bash -i
@@ -21,37 +21,44 @@ Metabarcoding data processing, since the user must know not only the inputs and 
 ###1_merge###
 #############
 1.edit the script to run in queue, type:
-*vi merge_pear.sh*
-INPUT_F="training_set_R1_subsampled.fastq"
-INPUT_R="training_set_R2_subsampled.fastq"
-THREADS="8"
-PVALUE="0.001"  
-OVERLAP="20"     
-QUAL="20"       
-UNCALLED="0"	#do not allow N's
-OUTPUT="my_training_set"
+vi merge_pear.sh
+    INPUT_F="training_set_R1_subsampled.fastq"
+    INPUT_R="training_set_R2_subsampled.fastq"
+    THREADS="8"
+    PVALUE="0.001"  
+    OVERLAP="20"     
+    QUAL="20"       
+    UNCALLED="0"	#do not allow N's
+    OUTPUT="my_training_set"
 save and quit typing:
-type esc :wq!
+esc :wq!
 
 2.edit (or only verify) the slurm file:
 vi run_merge_pear.slurm
-#!/bin/bash
-#SBATCH --account=nn9813k
-#SBATCH --job-name=Pear
-#SBATCH --ntasks=8
-#SBATCH --cpus-per-task=1
-#SBATCH --ntasks-per-node=8
-#SBATCH --mem-per-cpu=8G 
-#SBATCH --time=72:00:00
+    #!/bin/bash
+    #SBATCH --account=nn9813k
+    #SBATCH --job-name=Pear
+    #SBATCH --ntasks=8
+    #SBATCH --cpus-per-task=1
+    #SBATCH --ntasks-per-node=8
+    #SBATCH --mem-per-cpu=8G 
+    #SBATCH --time=72:00:00
 
-module --quiet purge
-module load StdEnv
-module load PEAR/0.9.11-GCCcore-9.3.0
+    module --quiet purge
+    module load StdEnv
+    module load PEAR/0.9.11-GCCcore-9.3.0
 
-set -o errexit 
-set -o nounset 
+    set -o errexit 
+    set -o nounset 
 
-./merge_pear.sh
+    ./merge_pear.sh
+    
+save and quit:
+esc :wq!
+
+run:
+sbatch run_merge_pear.slurm
+squeue -u user
 
 ###############
 ###2_demulti###
@@ -59,109 +66,168 @@ set -o nounset
 1. First you need to format the barcodes/mapping file text (tags -> sample) to a fasta file:
 type:
 perl preparing_tags_LCPI.pl 
-#####DEMULTIPLEXING DUAL INDEXED LIBRARIES#####
-EXPECTED INPUT:
-sample1 tagF    tagR
-sample2 tagF    tagR
-...     #same as in your excel file
-##DO NOT INCLUDE PRIMERS NOW
+    #####DEMULTIPLEXING DUAL INDEXED LIBRARIES#####
+    EXPECTED INPUT:
+    sample1 tagF    tagR
+    sample2 tagF    tagR
+    ...     #same as in your excel file
+    ##DO NOT INCLUDE PRIMERS NOW
 
-Please, enter your mapping file to edit: (copy and paste:)my_mapping_file.txt
->>>For Illumina merged reads type 'linked'
->>>For Illumina combinatorial type 'combinatorial'
->>>For Illumina exact paired dual index type 'unique'
->>>For Ion torrent dual index type 'ion'
->>> (type linked)
+    Please, enter your mapping file to edit: (copy and paste:)my_mapping_file.txt
+    >>>For Illumina merged reads type 'linked'
+    >>>For Illumina combinatorial type 'combinatorial'
+    >>>For Illumina exact paired dual index type 'unique'
+    >>>For Ion torrent dual index type 'ion'
+    >>> (type linked)
 
 The output will be the same input mapping file, but in fasta format:
 input:
 head my_mapping_file.txt
-1Ax      AGGTACGCAATT    CCTAAACTACGG
-2Ax      ACAGCCACCCAT    CCTAAACTACGG
-3Ax      TGTCTCGCAAGC    CCTAAACTACGG
-...
+    1Ax      AGGTACGCAATT    CCTAAACTACGG
+    2Ax      ACAGCCACCCAT    CCTAAACTACGG
+    3Ax      TGTCTCGCAAGC    CCTAAACTACGG
+    ...
 the output will be:
 head Barcodes_LA1.fa 
->1A
-^AGGTACGCAATT...CCTAAACTACGG$
->2A
-^ACAGCCACCCAT...CCTAAACTACGG$
->3A
-^TGTCTCGCAAGC...CCTAAACTACGG$
+    >1A
+    ^AGGTACGCAATT...CCTAAACTACGG$
+    >2A
+    ^ACAGCCACCCAT...CCTAAACTACGG$
+    >3A
+    ^TGTCTCGCAAGC...CCTAAACTACGG$
 (the same for LA2 and LA3, the reverse complement variations for the linked mode)
 ***files in cutadapt format
 
 2. Running the demultiplexing:
 vi demulti_dual_index_linked.sh	
 edit only this:
-INPUT="its_illumina.assembled.fastq" --> output from 1_merge step
-PAIR1="Barcodes_LA1.fa"
-PAIR2="Barcodes_LA2.fa"
-PAIR3="Barcodes_LA3.fa"
+    INPUT="its_illumina.assembled.fastq" --> OUTPUT FROM 1_merge STEP!!!
+    PAIR1="Barcodes_LA1.fa"
+    PAIR2="Barcodes_LA2.fa"
+    PAIR3="Barcodes_LA3.fa"
+    
 The output samples will be in "demulti_linked" folder.
 This step only works on SAGA job queue! Too heavy to run in bash, even using srun!
+3. edit and verify the slurm file:
 vi run_demulti_cutadapt.slurm
 uncomment ONLY the script you need:
-#./demulti_dual_index_ion.sh
-./demulti_dual_index_linked.sh (this one)
-#./demulti_dual_index_combinatorial.sh
-#./demulti_unique_dual_index.sh
-#./tags_primers_clip_trim.sh
+    #./demulti_dual_index_ion.sh
+    ./demulti_dual_index_linked.sh (this one)
+    #./demulti_dual_index_combinatorial.sh
+    #./demulti_unique_dual_index.sh
+    #./tags_primers_clip_trim.sh
+save and quit:
+esc :wq!
 
+run:
+sbatch run_primer_clipping.slurm
+squeue -u user
 
+#####################
 ###3_read_cleaning###
+#####################
 complete read cleaning from tags and primers clipping to dereplicated samples:
-./tags_primers_clip_trim_auto.sh -h
-##################################################
-Remove tags and primers from demultiplexed sample files and processes a series of format and cleaning steps, generating the quality file necessary for clustering, the fasta converted sample files and dereplicated by sample files..
-You can get your primers reverse complement in this website:
-http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
+1. copy the mapping file in fasta fromat used to demultiplex:
+cp ../demulti_linked/Bracodes_LA* .
+Barcodes_LA1.fa, Barcodes_LA2.fa, Barcodes_LA3.fa
 
-Usage: ./tags_primers_clip_trim.sh [-F primerF] [-R primerR] [-f RCprimerF] [-r RCprimerR] [-l 50] [-p pwd] [-e 0.2] [-b barcode.txt] [-q name] [-t threads]
--F     paste your primerF
--R     paste your primerR
--f     paste your reverse complement primerF
--r     paste your reverse complement primerR
--l     minimum length after trimming
--p     complete directory where the demultiplexed samples are
--e     maximum error rate allowed, higher more flexible
--b     barcodes.txt, the original mapping file used as input for perl preparing_tags_LCPI.pl script.
--t     number of threads
--h     Print this Help
-##################################################
+2. edit the address for your demultiplexed samples inside the first script, type:
+vi tag_primer_clipping_wrap1.sh
+edit:
+PRIMER_F1="TGTGAATTGCARRATYCMG"
+PRIMER_R1="CCCGHYTGAYYTGRGGTCD"
+PRIMER_F1_RC="CKGRATYYTGCAATTCACA"
+PRIMER_R1_RC="HGACCYCARRTCARDCGGG" --> **You can get your primers reverse complement in this website: http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
+then edit only the address:
+    for file in /cluster/projects/nn9813k/metapipe/ITS/ITS_illumina/demulti_linked/*_LA.fq;
+save and quit:
+esc :wq!
+the output will be in /adapter_clip and /primer_clip folders
 
-Script by script:
-1.tag_primer_clipping_part1.sh	in: demultiplexed fastq samples	out: clipped and trimmed tags and primers
-2.read_trim.sh	in: clipped fastq samples	out: trimmed and header formatted fastq		
-3.convert2fasta.sh	in: clip/formatted fastq	out: clip/formatted fasta		
-4.extract_quality.sh	in: clip/formatted fastq 	out: quality text with error rate and length
-5.dereplicate_by_sample.sh	in: clip/formatted fasta 	out: dereplicated samples
->>>>Edit tag_primer_clipping_part1.sh and tag_primer_clipping_part1.sh to run sequentially in SAGA slurm job
+3. edit the slurm file, type:
+vi run_primer_clipping.slurm
+uncomment only the wrap1:
+    ./tag_primer_clipping_wrap1.sh 
+    #./tag_primer_clipping_wrap2.sh
+save and quit:
+esc :wq!
 
-###4_dereplicate###
-edit derep_sample_global.sh and run in slurm job
+run:
+sbatch run_primer_clipping.slurm
+squeue -u user
 
+4. edit only the address for the adapters and primers clipped samples inside the second script, type:
+vi tag_primer_clipping_wrap2.sh
+edit address:
+  for file in /cluster/projects/nn9813k/metapipe/ITS/ITS_illumina/clipping_ML/primer_clip/*_trim2.fq;
+save and quit:
+esc :wq!
+
+5. edit the slurm file, type:
+vi run_primer_clipping.slurm
+uncomment only the wrap2 and comment the wrap1:
+    #./tag_primer_clipping_wrap1.sh 
+    ./tag_primer_clipping_wrap2.sh
+save and quit:
+esc :wq!
+
+run:
+sbatch run_primer_clipping.slurm
+squeue -u user
+
+the output will be in /trimming and /dereplicated folders
+
+##################
 ###5_clustering###
-clustering step, complete chain, in: dereplicated samples	out: representatives/struct/swarms/uchime and concat global derep multifasta
-./clustering_swarm_wrap.sh -h
-##################################################
-Global dereplication, clustering using SWARM, formatting and chimera searching wrapped script.
+##################
+1. the following wrapped script do all the job:
+vi clustering_swarm_with_chim_filter_wrap.sh
+edit:
+    GLOBAL_DP="my_project_global_dp.fas"
+    LENGTH=400 ###according to your expected amplicon lenght
+and right below, the address to the dereplicated samples:
+# Global dereplication
+    cat /cluster/projects/nn9813k/metapipe/ITS/dereplicated/*_dp.fasta > "${TMP_FASTA}"
+save and quit:
+esc :wq!
 
-Usage: ./clustering_swarm_wrap.sh [-l length] [-o output] [-p pwd]
--l     expected amplicon lenght
--o     output name 'my_project_marker'
--p     complete path to dereplicated by samples directory (3_read_cleaning step, derep_sample)
--h     print this help
-##################################################
+2. verify the slurm file:
+vi run_cluster_swarm.slurm
+#!/bin/bash
+#SBATCH --job-name=cluster
+#SBATCH --time=72:00:00
+#SBATCH --account=nn9813k
+#SBATCH --ntasks=8
+#SBATCH --cpus-per-task=1
+#SBATCH --ntasks-per-node=8
+#SBATCH --mem-per-cpu=16G
 
-script by script:
-1.global_dereplication.sh	in: dereplicated samples	out: concatenated globally dereplicated multifasta
-2.clustering_swarm.sh	in: concatenated globally dereplicated multifasta	out: representatives/struct/swarms/uchime
-3.sort_representatives.sh	in: _1f_representatives.fas		out: _2f_representatives.fas
-4.chimera_checking.sh	in: _1f_representatives.fas		out: in: _1f_representatives.uchime		
->>>clustering_swarm_complete.sh	to run using slurm job.
+set -o errexit
+set -o nounset
 
+./clustering_swarm_with_chim_filter_wrap.sh
+
+save and quit:
+esc :wq!
+
+run:
+sbatch run_cluster_swarm.slurm
+squeue -u user
+
+the output will be in the current folder, the most important are:
+my_project_global_dp.fas
+my_project_global_dp_2f_representatives.fas --> input for taxa assignment
+my_project_global_dp.swarms
+my_project_global_dp.stats
+my_project_global_dp.struct
+my_project_global_dp.uchime
+my_project_global_dp_nonchimeras_sorted.fasta --> optional input for taxa assignment
+
+they are the input for build the OTU table, together with the quality file generated in step 3 (my_project_quality_file.qual)
+
+###################
 ###6_taxa_assign###
+###################
 FOR NCBI LOCAL ALIGNMENT STRATEGIES
 1 ./EntrezDirect.sh -h		in: my query  out: my_search_esearch.fasta
 ##################################################
