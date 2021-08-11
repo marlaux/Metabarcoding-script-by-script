@@ -96,7 +96,7 @@ In this step, the 'tool' will take my 'input' and 'do something' in order to 'so
 Real example:
 The 'formatted barcode files' used in the 'demultiplex step' are required as input to 'cutadapt' in 'read cleaning step' in order to 'remove the tags' from the 'demultiplexed samples'.
 
-4. For each step you can run your data using the wrapped scripts, which have the --help flag and work interactively. They are named as "_auto.sh"
+4. For each step you can run your data using the flag scripts, which have the --help flag and work interactively. They are named as "_auto.sh"
 To run in bash instead of slurm job, you can ask the queue system to allocate compute resources for you and once assigned, you can run the commands in the command line during the time requested (max 2:00 hours):
 Ex 1: ask for 1 cpu running with 8GB RAM for 2 hours. Good for bash work, editing files, practicing linux and so on
 srun --ntasks=1 --mem-per-cpu=8G --time=02:00:00 --qos=devel --account=nn98133k --pty bash -i
