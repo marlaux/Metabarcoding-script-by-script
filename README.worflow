@@ -1,45 +1,117 @@
+##ATTENTION!!! The detailed guiding and description are in each step folder!!!! This is just an introduction:
+
 The main purpose of this repository is to help structure and organize the Metabarcoding pipeline, with special care to build scripts as user friendly as possible. 
-Another goal is to include more than one method for each step, in order to finally provide more than one pipeline branch.
 
-The scripts are presented as a chain of commands in step by step mode, along with wrapped scripts formatted to run in job queue or interactively using srun (scripts with flags).
-You can choose to run command by command, using independent little scripts, or using the wrapped scripts, allowing the user to view a help page and select the inputs dinamically.
+The scripts are presented as a chain of commands in step by step mode, along with wrapped scripts formatted to run in job queue or interactively using srun (scripts with flags).   
+You can choose to run command by command, using independent little scripts, or using the wrapped scripts (named with "_wrap.sh"), or using arguments in command line, allowing the
+user to view a help page and select the inputs dinamically (named with "_auto.sh").
 
-The wrapped mode performs the same tasks and generate the same outputs necessary for the chain connection, however, it only works in interactively session, allocating 
-resources to work in command line using srun:
-srun --ntasks=1 --mem-per-cpu=8G --time=01:00:00 --qos=devel --account=nn9623k --pty bash -i
+You can allocate resources to work in command line using srun:
+srun --ntasks=1 --mem-per-cpu=8G --time=02:00:00 --qos=devel --account=nn9813k --pty bash -i
+The maximum time is 2 hours and if you know you need more RAM memory, change to 16G (--mem-per-cpu=16G)
+There is a specific chain of scripts planned to run as slurm job scripts throughout the entire pipeline. 
+The mode of use of each script is described in each README step (e.g. README.demulti). 
 
-There is specific chained scripts planned to run as slurm job scripts. The mode of use of each script is described in each README step. 
-
-The step by step mode, on the other hand, runs each step and each script one after another. It is a good choice when your goal is to have a closer look to your outputs and what 
-is been done in each step. The step by step mode takes a longer time to run, because for each job you go back to the queue, but provides a deeper knowledge about the 
+The step by step mode, on the other hand, runs each step and each script one after another. It is a good choice when your goal is to have a closer look to your outputs
+and what is been done in each step. The step by step mode takes a longer time to run, because for each job you go back to the queue, but provides a deeper knowledge about the 
 Metabarcoding data processing, since the user must know not only the inputs and outputs, but also de intermediary files generated throughout the pipeline and why.
 
-STEP BY STEP WORKFLOW
+#STEP BY STEP WORKFLOW using queue system (recommended)
+#############
 ###1_merge###
-merge_pear.sh	in: R1.fastq + R2.fastq out: .assembled.fastq
-./merge_pear_auto.sh -h
-##################################################
-Merging of paired end fastq files from Illumina sequencing using Pear.
+#############
+1.edit the script to run in queue, type:
+*vi merge_pear.sh*
+INPUT_F="training_set_R1_subsampled.fastq"
+INPUT_R="training_set_R2_subsampled.fastq"
+THREADS="8"
+PVALUE="0.001"  
+OVERLAP="20"     
+QUAL="20"       
+UNCALLED="0"	#do not allow N's
+OUTPUT="my_training_set"
+save and quit typing:
+type esc :wq!
 
-Usage: ./merge_pear_auto.sh [-f R1.fq] [-r R2.fq] [-o output] [-p 0.001] [-s 20] [-t 4]
--f     R1.fastq original file
--r     R2.fastq original file
--o     output name for the assembled fastq file
--p     p-value: statistical test for true assembly. Lower p-value means less possibility of overlapping by chance. Options are: 0.0001, 0.001, 0.01, 0.05 and 1.0
--s     minimum overlap size.
--t     threads
--h     print this help
-##################################################
+2.edit (or only verify) the slurm file:
+vi run_merge_pear.slurm
+#!/bin/bash
+#SBATCH --account=nn9813k
+#SBATCH --job-name=Pear
+#SBATCH --ntasks=8
+#SBATCH --cpus-per-task=1
+#SBATCH --ntasks-per-node=8
+#SBATCH --mem-per-cpu=8G 
+#SBATCH --time=72:00:00
 
+module --quiet purge
+module load StdEnv
+module load PEAR/0.9.11-GCCcore-9.3.0
+
+set -o errexit 
+set -o nounset 
+
+./merge_pear.sh
+
+###############
 ###2_demulti###
-perl preparing_tags_LCPI.pl barcodes.txt' in: tab separated 3 columns barcodes.txt [sampleID \t tagF \t tagR] out: tags files in cutadapt format
-details in step 2_demulti:
-demulti_dual_index_linked.sh	in: .assembled.fastq + cutadapt formatted tags 	out: individual samples
-this step only works on SAGA job queue! Too heavy to run in bash, even using srun!
+###############
+1. First you need to format the barcodes/mapping file text (tags -> sample) to a fasta file:
+type:
+perl preparing_tags_LCPI.pl 
+#####DEMULTIPLEXING DUAL INDEXED LIBRARIES#####
+EXPECTED INPUT:
+sample1 tagF    tagR
+sample2 tagF    tagR
+...     #same as in your excel file
+##DO NOT INCLUDE PRIMERS NOW
+
+Please, enter your mapping file to edit: (copy and paste:)my_mapping_file.txt
+>>>For Illumina merged reads type 'linked'
+>>>For Illumina combinatorial type 'combinatorial'
+>>>For Illumina exact paired dual index type 'unique'
+>>>For Ion torrent dual index type 'ion'
+>>> (type linked)
+
+The output will be the same input mapping file, but in fasta format:
+input:
+head my_mapping_file.txt
+1Ax      AGGTACGCAATT    CCTAAACTACGG
+2Ax      ACAGCCACCCAT    CCTAAACTACGG
+3Ax      TGTCTCGCAAGC    CCTAAACTACGG
+...
+the output will be:
+head Barcodes_LA1.fa 
+>1A
+^AGGTACGCAATT...CCTAAACTACGG$
+>2A
+^ACAGCCACCCAT...CCTAAACTACGG$
+>3A
+^TGTCTCGCAAGC...CCTAAACTACGG$
+(the same for LA2 and LA3, the reverse complement variations for the linked mode)
+***files in cutadapt format
+
+2. Running the demultiplexing:
+vi demulti_dual_index_linked.sh	
+edit only this:
+INPUT="its_illumina.assembled.fastq" --> output from 1_merge step
+PAIR1="Barcodes_LA1.fa"
+PAIR2="Barcodes_LA2.fa"
+PAIR3="Barcodes_LA3.fa"
+The output samples will be in "demulti_linked" folder.
+This step only works on SAGA job queue! Too heavy to run in bash, even using srun!
+vi run_demulti_cutadapt.slurm
+uncomment ONLY the script you need:
+#./demulti_dual_index_ion.sh
+./demulti_dual_index_linked.sh (this one)
+#./demulti_dual_index_combinatorial.sh
+#./demulti_unique_dual_index.sh
+#./tags_primers_clip_trim.sh
+
 
 ###3_read_cleaning###
-complete read cleaning from tags and primers clipping to dereplicates samples:
-./tags_primers_clip_trim.sh -h
+complete read cleaning from tags and primers clipping to dereplicated samples:
+./tags_primers_clip_trim_auto.sh -h
 ##################################################
 Remove tags and primers from demultiplexed sample files and processes a series of format and cleaning steps, generating the quality file necessary for clustering, the fasta converted sample files and dereplicated by sample files..
 You can get your primers reverse complement in this website:
