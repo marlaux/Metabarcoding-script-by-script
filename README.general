@@ -1,29 +1,33 @@
 Hello fellow metabarcoder!
 
-This scripts/jobs/directories structure was planned to help you to not waste your precious resercher time with technical issues
-You can copy the entire 'metapipe' folder to your work directory using cp -r
-	cp -r /cluster/projects/nn9623k/metapipe .
-For each step, take a time to study what is been done, along with the tools and respective options. Your project question may be easily answered using an optional argument, remember that!
+This scripts/jobs/directories structure was planned to help you to not waste your precious researcher time with technical issues
+
+For each step, take a time to study what is been done, along with the tools and respective options. Your project question may be easily answered using some script optional argument/parameter, remember that!
 Besides reading lots and lots of cientific papers, do not forget that Google can help you a lot! Pages like https://www.biostars.org/ and http://seqanswers.com/ can solve your errors and doubts most of the times.
 Detailed description about the workflow, read README.workflow
 
 SOFTWARE INSTALLATION & LOAD MODULES
 
-The default for most of the scripts in this pipeline is:
+To search and load SAGA modules:
+module avail cutadapt
+--------------------------- /cluster/modulefiles/all ---------------------------------
+   cutadapt/1.18-foss-2018b-Python-3.6.6    cutadapt/2.7-GCCcore-8.3.0-Python-3.7.4    cutadapt/2.10-GCCcore-9.3.0-Python-3.8.2
+
 module --quiet purge --> generally clean everything
 module load StdEnv --> after purge, must load the environment again
-module load cutadapt/2.10-GCCcore-9.3.0-Python-3.8.2 
+module load cutadapt/2.10-GCCcore-9.3.0-Python-3.8.2 --> load the module
 
 using "module avail R", for example, you can choose the R version you want and load it.
 Everything you need to know is explained in Sigma2 HPC tutorial:
 https://documentation.sigma2.no/software/modulescheme.html
 
 SAGA JOB SYSTEM (SLURM)
-the "job", is a tool or script you need to run on HPC system (high performance computing) using a "queue" system.
+the "job", is a tool or script you need to run on HPC (high performance computing) using a "queue" system.
 In METAPIPE, the tools and commands are set up in bash scripts ".sh". Example: 
-global_dereplication.sh <-- your job is here
-run_derep_vsearch.slurm --> place your job on a queue waiting for the resources you asked.
+global_dereplication.sh <-- your script is here
+run_derep_vsearch.slurm --> this is your job: to place your script on a queue, waiting for the resources you asked.
 
+Example:
 ########################################
 vi run_derep_vsearch.slurm
 ########################################
@@ -32,9 +36,9 @@ vi run_derep_vsearch.slurm
 #SBATCH --time=72:00:00
 #SBATCH --account=nn9813k
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --mem-per-cpu=4G
+#SBATCH --mem=8G
 
 set -o errexit
 set -o nounset
@@ -43,6 +47,7 @@ set -o nounset
 #######################################
 
 
+Another example:
 #######################################
 vi dereplicate_by_sample.sh
 #######################################  
@@ -54,7 +59,7 @@ module load StdEnv
 module load VSEARCH/2.13.4-iccifort-2019.1.144-GCC-8.2.0-2.31.1
 
 # Pool sequences
-cat /cluster/projects/nn9623k/metapipe/3_read_cleaning/dereplicated/*.fasta > "${TMP_FASTA}"
+cat /cluster/projects/nn9813k/metapipe/3_read_cleaning/dereplicated/*.fasta > "${TMP_FASTA}"
 
 # Dereplicate (vsearch)
         vsearch --derep_fulllength "${TMP_FASTA}" \
@@ -66,12 +71,21 @@ cat /cluster/projects/nn9623k/metapipe/3_read_cleaning/dereplicated/*.fasta > "$
 rm -f "${TMP_FASTA}"
 #######################################
 
-After editing your command within .sh and editing your slurm file to run your job in queue:
-launch your job:
+After editing your command within .sh and editing your slurm file to run your job in queue, launch your job:
 sbatch run_derep_vsearch.slurm
 
 keep tracking:
 squeue -u my_user
+ JOBID      PARTITION  NAME  USER     ST  TIME         NODES  NODELIST(REASON)
+ 3261111    normal     clip  marlaux  R   1-04:53:02   1      c1-11
+ --> ST shows if your job is R (running), PD (pending) or E (had and error)
+ to check a long job, type:
+ scontrol show job 3261111 
+ JobId=3248851 JobName=clip
+   UserId=marlaux(202731) GroupId=marlaux(202731) MCS_label=N/A
+   Priority=19760 Nice=0 Account=nn9813k QOS=nn9813k
+   JobState=RUNNING Reason=None Dependency=(null) --> here you can see if there is a "reason" for "Pending", for example
+   ...
 
 GENERAL WORKLOW
 For each step:
@@ -82,16 +96,18 @@ In this step, the 'tool' will take my 'input' and 'do something' in order to 'so
 Real example:
 The 'formatted barcode files' used in the 'demultiplex step' are required as input to 'cutadapt' in 'read cleaning step' in order to 'remove the tags' from the 'demultiplexed samples'.
 
-4. For each step you can run your data using the wrapped scripts, which have the --help flag and work interactively. 
+4. For each step you can run your data using the wrapped scripts, which have the --help flag and work interactively. They are named as "_auto.sh"
 To run in bash instead of slurm job, you can ask the queue system to allocate compute resources for you and once assigned, you can run the commands in the command line during the time requested (max 2:00 hours):
-Ex 1: ask for 1 cpu running with 4GB RAM for 2 hours. Good for bash work, editing files, practicing linux and so on
-srun --ntasks=1 --mem-per-cpu=4G --time=02:00:00 --qos=devel --account=nn9623k --pty bash -i
-Ex 2: ask for 4 cpus, 4GB RAM each, running for 1 hour. The amount of resources and the time requested must be balanced. If you call 4 cpus, or 16GB RAM, you must ask for around 1 hour, otherwise it will last too much grant your request
-srun --ntasks=4 --mem-per-cpu=4G --time=01:00:00 --qos=devel --account=nn9623k --pty bash -i
+Ex 1: ask for 1 cpu running with 8GB RAM for 2 hours. Good for bash work, editing files, practicing linux and so on
+srun --ntasks=1 --mem-per-cpu=8G --time=02:00:00 --qos=devel --account=nn98133k --pty bash -i
+Ex 2: ask for 4 cpus, 8GB RAM each, running for 1 hour. The amount of resources and the time requested must be balanced. 
+srun --ntasks=4 --mem-per-cpu=8G --time=01:00:00 --qos=devel --account=nn9813k --pty bash -i
 Read more here: https://documentation.sigma2.no/jobs/interactive_jobs.html
 
-5. for running on SAGA job queue, edit your bash script and slurm job with your filenames and your job preferences. By default the tools which allow multithreading are set to 4 cpus running in one node with 4GB RAM each.The remaining tools are set to 1 cpu and 8GB RAM. Read each tool documentation to not waste queue time, because you can ask (and wait) for 16GB RAM for a tool which needs at most 2GB.
-6. If you know that your job is really heavy and demanding, you should use the slurm SCRATCH system. Read about it here: https://documentation.sigma2.no/jobs/running-scientific-software.html?highlight=scratch#slurm
+5. for running on SAGA job queue, edit your bash script and slurm job with your filenames and your command preferences. 
+**By default the tools which allow multithreading are set to 4 tasks running in one node with 8GB RAM each.The remaining tools are set to 1 task and 16GB RAM. 
+**Read each tool documentation to not waste queue time, because you can ask (and wait) for 16GB RAM for a tool which needs at most 2GB.
+**If you know that your job is really heavy and demanding, you should use the slurm SCRATCH system. Read about it here: https://documentation.sigma2.no/jobs/running-scientific-software.html?highlight=scratch#slurm
 7. run your job: sbatch run_my_job.slurm
 8. keep track: squeue -u my_user
 9. if you get an error:
