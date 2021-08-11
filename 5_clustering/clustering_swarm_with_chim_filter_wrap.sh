@@ -1,8 +1,8 @@
 #/bin/bash
 
 TMP_FASTA=$(mktemp --tmpdir=".")
-GLOBAL_DP="ITS_Illumina_Uniplant_global_dp.fas"
-LENGTH=400 ###according to your expected amplicon lenght
+GLOBAL_DP="ITS_global_dp.fas"
+LENGTH=300 ###according to your expected amplicon lenght
 
 
 module --force purge
@@ -10,7 +10,7 @@ module load StdEnv
 module load VSEARCH/2.13.4-iccifort-2019.1.144-GCC-8.2.0-2.31.1
 
 # Global dereplication
-cat /cluster/projects/nn9813k/metapipe/ITS/ITS_illumina/dereplicated_bash/*_dp.fasta > "${TMP_FASTA}"
+cat /cluster/projects/nn9813k/metapipe/ITS/dereplicated_bash/*_dp.fasta > "${TMP_FASTA}"
 
 # Global dereplication
 vsearch --derep_fulllength "${TMP_FASTA}" \
