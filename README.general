@@ -1,14 +1,25 @@
-Hello fellow metabarcoder!
+Hello fellow metabarcoders!\Olá colegas metabarcoders!
 
-THE LAST PIPELINE UPDATE CAN BE FOUND HERE: https://github.com/marlaux/METAPIPE
+THE UPDATED PIPELINE CAN BE FOUND HERE: https://github.com/marlaux/METAPIPE
 NEW WORKFLOW STRUCTURE!
 
-This scripts/jobs/directories structure was planned to help you to not waste your precious researcher time with technical issues
+A PIPELINE ATUALIZADA PODE SER ACESSADA HERE: https://github.com/marlaux/METAPIPE
+NOVA ESTRUTURA DO FLUXO DE TRABALHO
+
+This scripts/jobs/directories structure was planned to help you to not waste your precious researcher time with technical issues.
+Esta estrutura de scripts/jobs/diretórios foi planejada para ajudar você a não perder seu precioso tempo  como pesquisador com detalhes técnicos.
 
 For each step, take a time to study what is been done, along with the tools and respective options. Your project question may be easily answered using some script optional argument/parameter, remember that!
 Besides reading lots and lots of cientific papers, do not forget that Google can help you a lot! Pages like https://www.biostars.org/ and http://seqanswers.com/ can solve your errors and doubts most of the times.
 Detailed description about the workflow, read README.workflow
+Para cada etapa, tome um tempo para estudar o que está sendo feito, assim como estudar as ferramentas utilizadas e respectivas opções/parâmetros. Sua hipótese, ou questão a ser respondida, pode ser facilmente resolvida usando um parâmetro opcional, não esqueça disso!!!
 
+QUEUE SYSTEM IN HPC ENVIRONMENT (high-performance computing environment)
+Sistema de filas no Ambiente HPC
+
+This pipeline was originally built/configured to run through SLURM Workload Manager, but all the scripts can work in 
+O gerenciamento dos jobs dos usuários no cluster é feito através do SLURM Workload Manager
+Esta pipeline foi construída para rodar em ambiente slurm
 SOFTWARE INSTALLATION & LOAD MODULES
 
 To search and load SAGA modules:
