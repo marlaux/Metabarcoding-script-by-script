@@ -1,133 +1,99 @@
-Hello fellow metabarcoders!\Olá colegas metabarcoders!
+Hello fellow metabarcoders!     Olá colegas metabarcoders!    Texto em português abaixo!
 
 THE UPDATED PIPELINE CAN BE FOUND HERE: https://github.com/marlaux/METAPIPE
 NEW WORKFLOW STRUCTURE!
 
-A PIPELINE ATUALIZADA PODE SER ACESSADA HERE: https://github.com/marlaux/METAPIPE
-NOVA ESTRUTURA DO FLUXO DE TRABALHO
-
-This scripts/jobs/directories structure was planned to help you to not waste your precious researcher time with technical issues.
-Esta estrutura de scripts/jobs/diretórios foi planejada para ajudar você a não perder seu precioso tempo  como pesquisador com detalhes técnicos.
+The scripts/jobs/directories structure was planned to help you to not waste your precious researcher time with technical issues.
 
 For each step, take a time to study what is been done, along with the tools and respective options. Your project question may be easily answered using some script optional argument/parameter, remember that!
-Besides reading lots and lots of cientific papers, do not forget that Google can help you a lot! Pages like https://www.biostars.org/ and http://seqanswers.com/ can solve your errors and doubts most of the times.
-Detailed description about the workflow, read README.workflow
-Para cada etapa, tome um tempo para estudar o que está sendo feito, assim como estudar as ferramentas utilizadas e respectivas opções/parâmetros. Sua hipótese, ou questão a ser respondida, pode ser facilmente resolvida usando um parâmetro opcional, não esqueça disso!!!
 
-QUEUE SYSTEM IN HPC ENVIRONMENT (high-performance computing environment)
-Sistema de filas no Ambiente HPC
+Besides reading lots and lots of scientific papers, do not forget that Google can help you a lot! Pages like https://www.biostars.org/ and http://seqanswers.com/ can solve your errors and doubts most of the times.
 
-This pipeline was originally built/configured to run through SLURM Workload Manager, but all the scripts can work in 
-O gerenciamento dos jobs dos usuários no cluster é feito através do SLURM Workload Manager
-Esta pipeline foi construída para rodar em ambiente slurm
-SOFTWARE INSTALLATION & LOAD MODULES
+JOB/QUEUE SYSTEM IN HPC ENVIRONMENT (high-performance computing environment)
+The HPC clusters are resources that are shared between many users, and to ensure fair use everyone must do their computations by submitting jobs through a queue system (batch system) that will execute the applications on the available resources. 
 
-To search and load SAGA modules:
-module avail cutadapt
---------------------------- /cluster/modulefiles/all ---------------------------------
-   cutadapt/1.18-foss-2018b-Python-3.6.6    cutadapt/2.7-GCCcore-8.3.0-Python-3.7.4    cutadapt/2.10-GCCcore-9.3.0-Python-3.8.2
+RUNNING JOBS\RODANDO OS JOBS
+The "job", is a script to run on HPC using a "queue" system. The jobs run on the compute nodes, with the computatiohnal resources required.
+There are different queue systems, as SLURM, PBS and OpenPBS
+You can find a template for the jobs in the METAPIPE'S main page: slurm_job_template.slurm, OpenPBS_job_template.pbs, download/copy and use it!
 
-module --quiet purge --> generally clean everything
-module load StdEnv --> after purge, must load the environment again
-module load cutadapt/2.10-GCCcore-9.3.0-Python-3.8.2 --> load the module
+This pipeline was originally built/configured to run through SLURM Workload Manager, but all the scripts run without a job, directly on command prompt
 
-using "module avail R", for example, you can choose the R version you want and load it.
-Everything you need to know is explained in Sigma2 HPC tutorial:
-https://documentation.sigma2.no/software/modulescheme.html
-
-SAGA JOB SYSTEM (SLURM)
-the "job", is a tool or script you need to run on HPC (high performance computing) using a "queue" system.
-In METAPIPE, the tools and commands are set up in bash scripts ".sh". Example: 
-global_dereplication.sh <-- your script is here
-run_derep_vsearch.slurm --> this is your job: to place your script on a queue, waiting for the resources you asked.
-
-Example:
-########################################
-vi run_derep_vsearch.slurm
-########################################
-#!/bin/bash
-#SBATCH --job-name=derep
-#SBATCH --time=72:00:00
-#SBATCH --account=nn9813k
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --mem=8G
-
-set -o errexit
-set -o nounset
-
-./global_dereplication.sh
-#######################################
-
-
-Another example:
-#######################################
-vi dereplicate_by_sample.sh
-#######################################  
-TMP_FASTA=$(mktemp --tmpdir=".")
-FINAL_FASTA="my_training_set_global_dp.fas"
-
-module --force purge 
-module load StdEnv
-module load VSEARCH/2.13.4-iccifort-2019.1.144-GCC-8.2.0-2.31.1
-
-# Pool sequences
-cat /cluster/projects/nn9813k/metapipe/3_read_cleaning/dereplicated/*.fasta > "${TMP_FASTA}"
-
-# Dereplicate (vsearch)
-        vsearch --derep_fulllength "${TMP_FASTA}" \
-             --sizein \
-             --sizeout \
-             --fasta_width 0 \
-             --output "${FINAL_FASTA}" > /dev/null
-
-rm -f "${TMP_FASTA}"
-#######################################
-
-After editing your command within .sh and editing your slurm file to run your job in queue, launch your job:
-sbatch run_derep_vsearch.slurm
-
-keep tracking:
-squeue -u my_user
- JOBID      PARTITION  NAME  USER     ST  TIME         NODES  NODELIST(REASON)
- 3261111    normal     clip  marlaux  R   1-04:53:02   1      c1-11
- --> ST shows if your job is R (running), PD (pending) or E (had and error)
- to check a long job, type:
- scontrol show job 3261111 
- JobId=3248851 JobName=clip
-   UserId=marlaux(202731) GroupId=marlaux(202731) MCS_label=N/A
-   Priority=19760 Nice=0 Account=nn9813k QOS=nn9813k
-   JobState=RUNNING Reason=None Dependency=(null) --> here you can see if there is a "reason" for "Pending", for example
-   ...
+In METAPIPE, the modules, applications and script's commands are set up in bash scripts ".sh". Example: 
+merge_pear.sh <-- the script, type ./merge_pear.sh -h 
+run_merge_pear.slurm --> this is the job: slurm will place your script on a queue, waiting for the resources you asked and running on the compute nodes.
+Example 1: scripts with parameters (options)
+			./merge_pear.sh -f Lib1_R1_subsampled.fastq -r Lib1_R2_subsampled.fastq -o output -p 0.001 -s 20 -t 4
+Example 2: scripts with positional arguments
+			./clustering_swarm_with_chim_filter.sh my_project_prefix /cluster/work/users/my_user/my_work/METAPIPE/3_read_cleaning/dereplicated
 
 GENERAL WORKLOW
 For each step:
 1. read the README.step, placed in each directory
-2. study the basics of the tool(s) involved and take a look in the help_tool.txt, also available for each new tool by step.
+2. study the basics of the tool(s) involved and take a look in the help (-h or --help)
 3. identify your input files and make sure you know how to complete sentences like this:
 In this step, the 'tool' will take my 'input' and 'do something' in order to 'something', by 'doing this' and 'doing that' to each sequence, generating the 'output file'.
 Real example:
-The 'formatted barcode files' used in the 'demultiplex step' are required as input to 'cutadapt' in 'read cleaning step' in order to 'remove the tags' from the 'demultiplexed samples'.
-
-4. For each step you can run your data using the flag scripts, which have the --help flag and work interactively. They are named as "_auto.sh"
-To run in bash instead of slurm job, you can ask the queue system to allocate compute resources for you and once assigned, you can run the commands in the command line during the time requested (max 2:00 hours):
-Ex 1: ask for 1 cpu running with 8GB RAM for 2 hours. Good for bash work, editing files, practicing linux and so on
-srun --ntasks=1 --mem-per-cpu=8G --time=02:00:00 --qos=devel --account=nn98133k --pty bash -i
-Ex 2: ask for 4 cpus, 8GB RAM each, running for 1 hour. The amount of resources and the time requested must be balanced. 
-srun --ntasks=4 --mem-per-cpu=8G --time=01:00:00 --qos=devel --account=nn9813k --pty bash -i
+The 'Barcodes_LA.fa files' are required as input to 'cutadapt' tool in the 'demultiplexing step' for 'parsing the amplicons to the samples fasta files'.
+The 'clustering step' inputs are the 'dereplicated by sample fasta files', which consist of 'unique sequences', also called 'seeds', and respective 'abundance by sample'.
+To run in command prompt instead of jobs, you can ask the queue system to allocate compute resources for you, and once assigned you can run the commands.
+Example 1: ask for 1 cpu running with 8GB RAM for 2 hours. Good for basic scripts, editing files, practicing and so on
+srun --ntasks=1 --mem-per-cpu=8G --time=02:00:00 --qos=devel --account=nn9XXXk --pty bash -i
+Example 2: ask for 4 cpus, 8GB RAM each, running for 1 hour. The amount of resources and the time requested should be balanced. 
+srun --ntasks=4 --mem-per-cpu=8G --time=01:00:00 --qos=devel --account=nn9XXXk --pty bash -i
 Read more here: https://documentation.sigma2.no/jobs/interactive_jobs.html
-
-5. for running on SAGA job queue, edit your bash script and slurm job with your filenames and your command preferences. 
-**By default the tools which allow multithreading are set to 4 tasks running in one node with 8GB RAM each.The remaining tools are set to 1 task and 16GB RAM. 
+**By default the tools which allow multithreading are set to 4 tasks running in one node with 8GB RAM each.The remaining tools are set to 1 task and 8GB RAM. 
 **Read each tool documentation to not waste queue time, because you can ask (and wait) for 16GB RAM for a tool which needs at most 2GB.
 **If you know that your job is really heavy and demanding, you should use the slurm SCRATCH system. Read about it here: https://documentation.sigma2.no/jobs/running-scientific-software.html?highlight=scratch#slurm
-7. run your job: sbatch run_my_job.slurm
-8. keep track: squeue -u my_user
-9. if you get an error:
-	a. read the slurm.log file
-	b. copy and paste the error or warning on google, most of the time someone already asked it
+4. if you get an error:
+	a. read the log files
+	b. copy and paste the error or warning on Google, most of the time someone have already asked it
 	c. permission denied: run a global permission in your directory: chmod 776 *
-	
-Have fun!
+5. do not be stuck!	Write to me if you need help: marlaux@outlook.com
 
+
+Olá colegas metabarcoders!
+
+A PIPELINE ATUALIZADA PODE SER ACESSADA AQUI: https://github.com/marlaux/METAPIPE
+
+A estrutura de scripts/jobs/diretórios foi planejada para ajudar você a não perder seu precioso tempo de pesquisador com detalhes técnicos.
+
+Para cada etapa, tome um tempo para estudar o que está sendo feito, assim como estudar as ferramentas utilizadas e respectivas opções/parâmetros. Sua hipótese, ou questão a ser respondida, pode ser facilmente resolvida usando um parâmetro opcional, não esqueça disso!!!
+
+Além de ler muitos artigos científicos, não se esqueça que o Google pode te ajudar muito! Páginas como https://www.biostars.org/ e http://seqanswers.com/ podem solucionar seus erros e dúvidas na maioria das vezes. 
+
+
+Sistema de filas no Ambiente HPC (high-performance computing environment)
+Os clusters HPC são recursos compartilhados entre vários usuários, os quais devem enviar seus scripts para rodar no sistema de fila, que executará os aplicativos utilizando os recursos solicitados e disponíveis. 
+O "job" é um script a ser executado em HPC usando um controlador de filas. Os jobs são executados nos nós de computação, com os recursos computacionais necessários.
+Existem diferentes controladores de filas, como SLURM, PBS e OpenPBS
+Você pode encontrar um modelo para os jobs na página principal da METAPIPE: slurm_job_template.slurm, arquivos OpenPBS_job_template.pbs, baixe/copie e use! 
+Esta pipeline foi originalmente construída/configurada para rodar em job usando SLURM, mas todos os scripts rodam sem job, diretamente no prompt de comando.
+
+Na METAPIPE pipeline, os aplicativos, ferramentas e scripts são montados em scripts bash ".sh" e Perl ".pl". 
+Exemplo 1: scripts com parâmetros (opções)
+./merge_pear.sh -f Lib1_R1_subsampled.fastq -r Lib1_R2_subsampled.fastq -o output -p 0,001 -s 20 -t 4
+Exemplo 2: scripts com argumentos posicionais
+./clustering_swarm_with_chim_filter.sh my_project_prefix /cluster/work/users/my_user/my_work/METAPIPE/3_read_cleaning/dereplicated
+
+FLUXO GERAL DE TRABALHO
+** Por padrão, as ferramentas que permitem multithreading são definidas para 4 cpus rodando em um nó com 8 GB de RAM cada. As ferramentas restantes são definidas para 1 tarefa e 8 GB de RAM.
+** Leia a documentação de cada ferramenta para não perder tempo na fila, pois você pode pedir (e esperar) 16 GB de RAM para uma ferramenta que precisa de no máximo 2 GB.
+
+Para cada etapa:
+1. leia o README localizado em cada diretório
+
+2. estude o básico da(s) ferramenta(s) envolvida(s) e dê uma olhada na ajuda (-h ou --help)
+
+3. identifique seus arquivos de entrada e certifique-se de saber como completar frases como esta:
+Nesta etapa, a 'ferramenta' usará o 'arquivo fasta' como input para 'fazer algo', gerando o 'output.txt' que contém 'métricas de tal coisa'.
+Exemplo real:
+Os 'arquivos fasta Barcodes_LA.fa', gerados pelo script 'preparing_tags_LCPI.pl', são necessários como entrada para a ferramenta 'cutadapt' na 'etapa de demultiplexação' para 'parsear os amplicons por amostra'.
+Os inputs da 'etapa de clusterização' são os 'arquivos fasta desreplicados por amostra', que consistem em 'sequências únicas', e a respectiva 'abundância por amostra'.
+
+4. se acontecer um erro:
+		a. leia os arquivos de log
+		b. copie e cole o erro ou aviso no Google, na maioria das vezes alguém já perguntou
+		c. permissão negada: execute uma permissão global em seu diretório: chmod 776 *
+		
+5. não fique travado! Escreva para mim se precisar de ajuda: marlaux@outlook.com
