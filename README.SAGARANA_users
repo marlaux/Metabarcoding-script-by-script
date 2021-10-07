@@ -1,0 +1,35 @@
+##############################################################################################################
+CEPAD - centro de processamento de alto desempenho do ICB/UFMG
+##############################################################################################################
+SAGARANA E SARAPALHA
+##############################################################################################################
+A SARAPALHA é um servidor dedicado à transferência de arquivos para a SAGARANA. A troca de dados com a SAGARANA ocorre na pasta '2sagarana', através de espelhamento. Esta é a única pasta que você vai usar na SARAPALHA, use o /home apenas da SAGARANA. Lembre de remover os seus arquivos depois que eles forem devidamente transferidos para a SAGARANA.
+As suas análises vão rodar de fato no "cluster" computacional SAGARANA, dedicado à computação de alto desempenho.
+A SAGARANA tem um gerenciador de fila OpenPBS com duas filas físicas, uma para utilizar as máquinas de 64 cores (maioria das nossas análises roda nessas máquinas), e outra para utilizar a máquina de 256 cores.
+A máquina de 256 cores deve ser usada apenas para análises realmente longas e que realmente requerem muitos CPUs trabalhando paralelamente (Blast, assemblies, bowtie2, etc). É importante pesquisar na documentação de cada aplicação/ferramenta sobre a possibilidade de paralelização, pois muitas ferramentas amplamente utilizadas não são capazes de paralelizar, ou então algumas funções específicas, como por exemplo a etapa de demultiplexação utilizando a ferramenta Cutadapt. É um job muito longo, porém ele usa apenas um 'thread'. Da mesma forma, é importante verificar o uso de memória RAM, pois não apenas a falta de memória atrapalha, mas também o excesso. 
+Para acessar a SAGARANA, você primeiro loga na SARAPALHA. Exemplo Putty:
+Host Name (or IP address)     Port
+sarapalha.icb.ufmg.br          22 
+Saved Sessions
+Sarapalha
+save
+Após salvar o endereço para acessar a Sarapalha, clique em load para conectar e logar, entrando com seu usuário e senha (igual da MINHAUFMG).
+Ao logar na SARAPALHA, liste o conteúdo de sua home:
+ls
+você não vai ver nada, nem mesmo a pasta 2sagarana, a qual será a única e pela qual você enviará arquivos para a SAGARANA.
+Logado na SARAPALHA, digite:
+ssh sagarana
+digite sua senha
+...
+...atualizar a parte da pasta 2sagarana e o vai e vem entre elas...
+...
+Na SAGARANA, os três principais diretórios são:
+/home -> usuários, não há limite de uso. 
+/programs -> hospeda os programas
+/databases -> hospeda as bases de dados mais usadas.
+
+Para transferir seus arquivos do seu computador pessoal ou do laboratório para a SARAPALHA, use o seguinte comando:
+scp meu_arquivo.fasta meu_user@sarapalha.icb.ufmg.br:/home/ufmg/meu_user/2sagarana/
+Para transferir seus arquivos da SARAPALHA seu computador pessoal, use o seguinte comando:
+sftp meu_user@sarapalha.icb.ufmg.br:/home/ufmg/meu_user/2sagarana/meu_arquivo.fasta . (o pontinho significa transfira 'aqui', nesse diretório atual)
+

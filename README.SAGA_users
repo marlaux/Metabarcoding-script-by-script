@@ -1,0 +1,100 @@
+##############################################################################################################
+JOB/QUEUE SYSTEM IN HPC ENVIRONMENT (high-performance computing environment)
+##############################################################################################################
+The HPC clusters are resources that are shared between many users, and to ensure fair use everyone must do their computations by submitting jobs through a queue system (batch system) that will execute the applications on the available resources. 
+The SAGA supercomputer is placed at NTNU in Trondheim, Norway, and is designed to run both sequential and parallel workloads. 
+          https://documentation.sigma2.no/hpc_machines/saga.html
+Slurm is used in SAGA as the workload manager and job scheduler.
+          https://slurm.schedmd.com/quickstart.html
+When you log in to a cluster, you are logged in to a login node shared by all users and you can only create directories, copy files, edit, and run short scripts and tests.
+/cluster/work/users/my_user is your actual work directory. Store and run all work files and scripts in this directory.
+Do not run complex commands or scripts directly on the command prompt. For running anything on command prompt, you must request resources using the following srun command:
+srun --nodes=1 --ntasks=1 --mem=8G --time=02:00:00 --qos=devel --account=nn9XXXk --pty bash –I
+edit account=project code, e.g. nn9813k or nn9623k. 2 hours is the time limit, after it the session ends, and you need to request resources again. 
+Pay attention to copy your commands on work.txt diaries, because you might lose your commands history.
+When more than one student is working with the same sequencing dataset, store the rawdata in a dedicated directory in the projects directory, so the teammates may have access to the same files and share metadata files.
+/cluster/projects/nnXXXXk/create_new_directory
+##############################################################################################################
+RUNNING JOBS
+##############################################################################################################
+The "job", is a script to run on HPC using a "queue" system. The jobs started via Slurm script run on the compute nodes, with the computatiohnal resources required.
+You can find a template for a slurm job above in the slurm_job_template.slurm file, download/copy and use it!
+
+LOAD MODULES
+The software module system allows us to have many different versions of compilers, libraries, and applications available for different users at the same time without conflicting each other.
+module avail <modulename> -> list the available modules
+module list -> list the currently loaded modules
+module load <modulename> -> load the module called modulename
+module unload <modulename> -> unload the module called modulename
+module show <modulename> -> display configuration settings for modulename
+module --quiet purge --> generally clean everything
+module load StdEnv --> after purge, must load the environment again
+
+Let`s search for the `Cutadapt` module:
+module avail cutadapt
+--------------------------- /cluster/modulefiles/all ---------------------------------
+   cutadapt/1.18-foss-2018b-Python-3.6.6    cutadapt/2.7-GCCcore-8.3.0-Python-3.7.4    cutadapt/2.10-GCCcore-9.3.0-Python-3.8.2
+
+Now, let's load the module:
+module load cutadapt/2.10-GCCcore-9.3.0-Python-3.8.2 --> load the module
+
+using "module avail R", for example, you can choose the R version you want and load it.
+Everything you need to know is explained in Sigma2 HPC tutorial:
+https://documentation.sigma2.no/software/modulescheme.html
+
+In METAPIPE, the modules, applications and script's commands are set up in bash scripts ".sh". Example: 
+merge_pear.sh <-- the script, type ./merge_pear.sh -h 
+run_merge_pear.slurm --> this is the job: slurm will place your script on a queue, waiting for the resources you asked and running on the compute nodes.
+Example 1: scripts with parameters (options)
+vi run_merge_pear.slurm
+			#!/bin/bash
+
+			#SBATCH --account=nn9813k
+			#SBATCH --job-name=Pear
+			#SBATCH --ntasks=4
+			#SBATCH --cpus-per-task=1
+			#SBATCH --ntasks-per-node=4
+			#SBATCH --mem-per-cpu=8G
+			#SBATCH --time=72:00:00
+
+
+			set -o errexit
+			set -o nounset
+
+
+			./merge_pear.sh -f Lib1_R1_subsampled.fastq -r Lib1_R2_subsampled.fastq -o output -p 0.001 -s 20 -t 4
+
+			exit 0
+
+Example 2: scripts with arguments
+clustering_swarm_with_chim_filter.sh -> this script get the inputs as positional arguments
+vi run_cluster_swarm.slurm
+			#!/bin/bash
+			#SBATCH --job-name=cluster
+			#SBATCH --time=72:00:00
+			#SBATCH --account=nn9813k
+			#SBATCH --ntasks=8
+			#SBATCH --cpus-per-task=1
+			#SBATCH --ntasks-per-node=8
+			#SBATCH --mem=16G
+
+			set -o errexit
+			set -o nounset
+
+			./clustering_swarm_with_chim_filter.sh my_project_prefix /cluster/work/users/my_user/my_work/METAPIPE/3_read_cleaning/dereplicated
+
+
+After editing your command within the slurm file, launch your job:
+sbatch run_cluster_swarm.slurm
+keep tracking:
+squeue -u my_user
+			JOBID      PARTITION  NAME     USER     ST   TIME         NODES  NODELIST(REASON)
+			3261111    normal     cluster  user      R   1-04:53:02   1      c1-11
+ST shows if your job is R (running), PD (pending) or E (had and error)
+to check a long job, type:
+scontrol show job 3261111 
+			   JobId=3248851 JobName=clip
+			   UserId=marlaux(202731) GroupId=marlaux(202731) MCS_label=N/A
+			   Priority=19760 Nice=0 Account=nn9813k QOS=nn9813k
+			   JobState=RUNNING Reason=None Dependency=(null) --> here you can see if there is a "reason" for "Pending", for example
+			   ...
