@@ -1,7 +1,4 @@
 #/bin/bash
-module --quiet purge
-module load StdEnv
-module load PEAR/0.9.11-GCCcore-9.3.0
 
 INPUT_F=''
 INPUT_R=''
@@ -28,7 +25,7 @@ usage () {
         echo "-h     print this help"
         echo " "
         echo "##################################################"
-                1>&2; exit 1;
+               2>/dev/null; exit 1; 
 
 }
 
@@ -47,20 +44,24 @@ while getopts "f:r:o:p:s:t:h" option; do
 	t) THREADS="${OPTARG}"
                ;;
         h | *) usage
-                exit 0
+                2>/dev/null; exit 0
                 ;;
         \?) echo "Invalid option: -$OPTARG"
-                exit 1
+                2>/dev/null; exit 1
                 ;;
    esac
 done
 
 if [ -z "$INPUT_F" ] || [ -z "$INPUT_R" ] || [ -z "$OUTPUT" ] ; then
-        echo 'Missing argument' >&2
+        echo 'Missing argument' 2>/dev/null
         exit 1
 fi
 
-	pear -j ${THREADS}	\
+module --quiet purge
+module load StdEnv
+module load PEAR/0.9.11-GCCcore-9.3.0
+
+pear -j ${THREADS}	\
 		 -p ${PVALUE}	\
 		 -v ${OVERLAP}	\
 		 -q ${QUAL}	\

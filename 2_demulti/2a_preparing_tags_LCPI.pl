@@ -5,17 +5,12 @@ use strict;
 package ECHO_MODULE;
 package main;
 
-print "#####DEMULTIPLEXING DUAL INDEXED LIBRARIES#####\n";
-print "EXPECTED INPUT:\nsample1\ttagF\ttagR\nsample2\ttagF\ttagR\n...\t#same as in your excel file\n##DO NOT INCLUDE PRIMERS NOW\n\n";
-print "Please, enter your mapping file to edit:\t";
-my $arq1 = <STDIN>;
-chomp $arq1;
-open (MYFILE, $arq1);
+my $file = $ARGV[0];
+my $subname = $ARGV[1];
+open (MYFILE, $file);
 my @file = <MYFILE>;
 close (MYFILE);
 
-print ">>>For Illumina merged reads type 'linked'\n>>>For Illumina combinatorial type 'combinatorial'\n>>>For Illumina exact paired dual index type 'unique'\n>>>For Ion torrent dual index type 'ion'\n>>>For Ion dual index 3' anchored 'ion3'\n>>>For Ion dual index 5' anchored 'ion5'\n>>>For Ion dual index both anchored 'ion-both'\t";
-chop (my $subname = <STDIN>);
 if ($subname eq 'linked') {
 	&linked;
 }
@@ -34,18 +29,20 @@ if ($subname eq 'ion3')       {
 if ($subname eq 'ion5')       {
         &ion5;
 }
-elsif ($subname eq 'ion-both')	{
+elsif ($subname eq 'ionboth')	{
 	&ionboth;
 }
 
 sub linked
 {
-open (NEW_FILE1, '>>Barcodes_LA1.fa');
-open (NEW_FILE2, '>>Barcodes_LA2.fa');
-open (NEW_FILE3, '>>Barcodes_LA3.fa');
+open (NEW_FILE1, '>>Tags_LA1.fa');
+open (NEW_FILE2, '>>Tags_LA2.fa');
+open (NEW_FILE3, '>>Tags_LA3.fa');
+open (NEW_FILE4, '>>Tags_LA4.fa');
 my @new_file1=();
 my @new_file2=();
 my @new_file3=();
+my @new_file4=();
         foreach my $line (@file) {
 			chomp ($line);
 			$line =~ s/\R//g;
@@ -62,15 +59,17 @@ my @new_file3=();
 			push (@new_file1, (">$sample\n^$tag_F...$tag_R\$\n"));	
 			push (@new_file2, (">$sample\n^$RCtagR...$RCtagF\$\n"));
 			push (@new_file3, (">$sample\n^$tag_F...$RCtagR\$\n"));
+			push (@new_file4, (">$sample\n^$tag_R...$RCtagF\$\n"));
 			}
         print NEW_FILE1 @new_file1;
 	print NEW_FILE2 @new_file2;
 	print NEW_FILE3 @new_file3;
+	print NEW_FILE4 @new_file4;
 }
 sub combinatorial
 {
-open (NEW_FILE1, '>>Barcodes_F.fa');
-open (NEW_FILE2, '>>Barcodes_R.fa');
+open (NEW_FILE1, '>>Tags_F.fa');
+open (NEW_FILE2, '>>Tags_R.fa');
 my @new_file1=();
 my @new_file2=();
         foreach my $line (@file) {
@@ -88,10 +87,10 @@ my @new_file2=();
 }
 sub unique
 {
-open (NEW_FILE1, '>>Barcode_R1.fa');
-open (NEW_FILE2, '>>Barcode_R2.fa');
-open (NEW_FILE3, '>>Barcode_R1_RC.fa');
-open (NEW_FILE4, '>>Barcode_R2_RC.fa');
+open (NEW_FILE1, '>>Tags_R1.fa');
+open (NEW_FILE2, '>>Tags_R2.fa');
+open (NEW_FILE3, '>>Tags_R1_RC.fa');
+open (NEW_FILE4, '>>Tags_R2_RC.fa');
 my @new_file1=();
 my @new_file2=();
 my @new_file3=();
@@ -120,10 +119,10 @@ my @new_file4=();
 }
 sub ion
 {
-open (ALT1, '>>Barcodes_alt1.fa');
-open (ALT2, '>>Barcodes_alt2.fa');
-open (ALT3, '>>Barcodes_alt3.fa');
-open (ALT4, '>>Barcodes_alt4.fa');
+open (ALT1, '>>Tags_alt1.fa');
+open (ALT2, '>>Tags_alt2.fa');
+open (ALT3, '>>Tags_alt3.fa');
+open (ALT4, '>>Tags_alt4.fa');
 my @tags_alt_1=();
 my @tags_alt_2=();
 my @tags_alt_3=();
@@ -153,10 +152,10 @@ my @tags_alt_4=();
 }
 sub ion3
 {
-open (ALT1, '>>Barcodes_alt1_3anch.fa');
-open (ALT2, '>>Barcodes_alt2_3anch.fa');
-open (ALT3, '>>Barcodes_alt3_3anch.fa');
-open (ALT4, '>>Barcodes_alt4_3anch.fa');
+open (ALT1, '>>Tags_alt1_3anch.fa');
+open (ALT2, '>>Tags_alt2_3anch.fa');
+open (ALT3, '>>Tags_alt3_3anch.fa');
+open (ALT4, '>>Tags_alt4_3anch.fa');
 my @tags_alt_1_3anch=();
 my @tags_alt_2_3anch=();
 my @tags_alt_3_3anch=();
@@ -186,10 +185,10 @@ my @tags_alt_4_3anch=();
 }
 sub ion5
 {
-open (ALT1, '>>Barcodes_alt1_5anch.fa');
-open (ALT2, '>>Barcodes_alt2_5anch.fa');
-open (ALT3, '>>Barcodes_alt3_5anch.fa');
-open (ALT4, '>>Barcodes_alt4_5anch.fa');
+open (ALT1, '>>Tags_alt1_5anch.fa');
+open (ALT2, '>>Tags_alt2_5anch.fa');
+open (ALT3, '>>Tags_alt3_5anch.fa');
+open (ALT4, '>>Tags_alt4_5anch.fa');
 my @tags_alt_1_5anch=();
 my @tags_alt_2_5anch=();
 my @tags_alt_3_5anch=();
@@ -219,10 +218,10 @@ my @tags_alt_4_5anch=();
 }
 sub ionboth
 {
-open (ALT1, '>>Barcodes_alt1_bothanch.fa');
-open (ALT2, '>>Barcodes_alt2_bothanch.fa');
-open (ALT3, '>>Barcodes_alt3_bothanch.fa');
-open (ALT4, '>>Barcodes_alt4_bothanch.fa');
+open (ALT1, '>>Tags_alt1_bothanch.fa');
+open (ALT2, '>>Tags_alt2_bothanch.fa');
+open (ALT3, '>>Tags_alt3_bothanch.fa');
+open (ALT4, '>>Tags_alt4_bothanch.fa');
 my @tags_alt_1_bothanch=();
 my @tags_alt_2_bothanch=();
 my @tags_alt_3_bothanch=();

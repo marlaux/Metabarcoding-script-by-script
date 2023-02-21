@@ -1,3 +1,9 @@
+#########################################################################
+> perl 2a_preparing_tags_LCPI.pl my_mapping_file.txt linked
+Output:
+Tags_LA1.fa   Tags_LA2.fa   Tags_LA3.fa   Tags_LA4.fa
+> ./2b_demulti_dual_index_linked.sh my_data.assembled.fastq
+#########################################################################
 If you are not familiar with this step, please read all the orientation:
 For all demultiplexing strategies based on cutadapt the mapping file must be a tab separated text file like this:
 
@@ -6,21 +12,8 @@ sample1   	AGGTACGCAATT	CCTAAACTACGG
 sample2    	ACAGCCACCCAT	CCTAAACTACGG
 sample3    	TGTCTCGCAAGC	CCTAAACTACGG
 
-then we format it according to your tag primer design using the perl script preparing_tags_LCPI.pl. The dominant tag orientation for Illumina dual index merged pairs: (3'tagF)...(5'RCtagR)
-perl preparing_tags_LCPI.pl
-#####DEMULTIPLEXING DUAL INDEXED LIBRARIES#####
-EXPECTED INPUT:
-sample1 tagF    tagR
-sample2 tagF    tagR
-...     #same as in your excel file
-##DO NOT INCLUDE PRIMERS NOW
-
-Please, enter your mapping file to edit: my_mapping_file.txt
->>>For Illumina merged reads type 'linked'
->>>For Illumina combinatorial type 'combinatorial'
->>>For Illumina exact paired dual index type 'unique'
->>>For Ion torrent dual index type 'ion'
->>> type your mode
+then we format it according to your tag primer design using the perl script preparing_tags_LCPI.pl. 
+The dominant tag orientation for Illumina dual index merged pairs: (3'tagF)...(5'RCtagR)
 
 for merged R1-R2 Illumina files in linked mode, the tags ar formatted like this:
 head Barcodes_LA.fa

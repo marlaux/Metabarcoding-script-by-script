@@ -1,6 +1,8 @@
-./merge_pear_auto.sh -h
- 
-Usage: ./merge_pear_auto.sh [-f R1.fq] [-r R2.fq] [-o output] [-p 0.001] [-s 20] [-t 4]
+./1_merge_pear.sh -h
+##################################################
+Merging of paired end fastq files from Illumina sequencing using Pear.
+
+Usage: ./1_merge_pear.sh [-f R1.fq] [-r R2.fq] [-o output] [-p 0.001] [-s 20] [-t 4]
 -f     R1.fastq original file
 -r     R2.fastq original file
 -o     output name for the assembled fastq file
@@ -8,8 +10,10 @@ Usage: ./merge_pear_auto.sh [-f R1.fq] [-r R2.fq] [-o output] [-p 0.001] [-s 20]
 -s     minimum overlap size.
 -t     threads
 -h     print this help
-
 ##################################################
+Output:
+my_data.assembled.fastq
+
 MERGING STEP -> PEAR 
 IF YOU WOULD LIKE TO EDIT THE SCRIPT BY YOURSELF:
 1. Open the merging_pear.sh and replace the name of your original fastq files R1 and R2
