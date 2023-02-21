@@ -11,6 +11,8 @@ Usage: ./1_merge_pear.sh [-f R1.fq] [-r R2.fq] [-o output] [-p 0.001] [-s 20] [-
 -t     threads
 -h     print this help
 ##################################################
+Output:
+my_data.assembled.fastq
 
 MERGING STEP -> PEAR 
 IF YOU WOULD LIKE TO EDIT THE SCRIPT BY YOURSELF:
