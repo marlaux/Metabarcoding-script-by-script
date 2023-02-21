@@ -18,6 +18,6 @@ set -o nounset
 
 ./merge_pear.sh
 #or
-#./merge_pear_auto.sh -f R1.fq -r R2.fq -o output -p 0.001 -s 20 -t 8
+#./1_merge_pear.sh [-f R1.fq] [-r R2.fq] [-o output] [-p 0.001] [-s 20] [-t 8]
 
 exit 0
